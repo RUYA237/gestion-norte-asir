@@ -1,0 +1,23 @@
+# Máquinas virtuales e imágenes (van por Drive o disco externo, nunca a Git)
+*.ova
+*.ovf
+*.vmdk
+*.vmx
+*.vmsd
+*.nvram
+*.iso
+*.lck/
+# Secretos
+*.key
+*.pem
+*.p12
+*.pfx
+.env
+*secret*
+*password*
+*.restic-pass
+.pgpass
+# Sistema
+.DS_Store
+Thumbs.db
+~$*
