@@ -43,3 +43,37 @@ VMnet11-19: tipo host-only, **sin** "Use local DHCP service" y **sin** "Connect 
 - Departamento ↔ departamento: denegado.
 - Administración (SSH, RDP, WinRM) solo desde VLAN 10 o VPN-ADM a través del bastión.
 - Invitados: solo web a Internet. DNS solo hacia ubu-fw (el 53 directo a Internet se bloquea).
+
+## SSH (acceso administrativo a Linux)
+
+Solo Linux usa SSH. Windows se administra con PowerShell Remoting (WinRM), no con SSH.
+
+| Origen | Destino | Puerto | Regla |
+|---|---|---|---|
+| VLAN 10 (GESTION) | ubu-fw, ubu-svc, bkp01 | 22/tcp | Permitido |
+| VPN-ADM (10.1.91.0/24) | ubu-fw (salto) | 22/tcp | Permitido, solo hacia el bastión |
+| Resto de VLAN y VPN-USR | cualquier Linux | 22/tcp | Denegado y registrado |
+| Internet | ubu-fw | 22/tcp | Denegado (solo se llega por VPN) |
+
+Solo el bastión (ubu-fw) acepta conexiones desde fuera de sus VLAN. Desde ubu-fw se salta a ubu-svc y bkp01 con `ssh -J` o `ProxyJump`.
+
+**Configuración de sshd en cada Linux:**
+- Solo clave pública (`PasswordAuthentication no`, `KbdInteractiveAuthentication no`).
+- Sin root (`PermitRootLogin no`).
+- Acceso solo al grupo `gn-admin` (`AllowGroups gn-admin`).
+- `MaxAuthTries 3`, `LoginGraceTime 30`.
+
+**Registro y bloqueo:**
+- Intentos fallidos a Wazuh (nivel 2).
+- fail2ban en ubu-fw, con bloqueo de 10 minutos tras 5 fallos (nivel 2).
+
+**Estado:**
+
+| Pieza | Estado | Nivel |
+|---|---|---|
+| SSH con clave, sin root y con grupo permitido en ubu-fw, ubu-svc y bkp01 | Pendiente de verificar | 1 |
+| Reglas nftables de acceso a 22/tcp (desde VLAN 10 y VPN-ADM) | Pendiente de verificar | 1 |
+| Intentos fallidos enviados a Wazuh | Pendiente de verificar | 2 |
+| fail2ban | Pendiente de verificar | 2 |
+| Certificados SSH con caducidad | Propuesto | — |
+| WinRM por HTTPS en dc1 y dc2 | Propuesto | — |
