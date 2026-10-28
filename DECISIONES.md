@@ -21,6 +21,12 @@ Formato: fecha · decisión · por qué · alternativa descartada · estado. Una
 | D15 | 27/10 | AD, firewall y Wazuh en VM; solo PostgreSQL, Zabbix y Caddy en contenedor | Un DC no se puede contenerizar; los contenedores comparten kernel | Todo en contenedores | Decidido |
 | D16 | 27/10 | Alcance por niveles: 1 obligatorio, 2 si da tiempo, 3 propuesto | 10 días hasta el borrador sin máquinas montadas | Implementarlo todo | Decidido |
 
+| D17 | 28/10 | Wi-Fi de visitas en VLAN 80 aislada, solo web a Internet | El cliente nos pide valorarlo; hay atención presencial | Sin red de invitados; invitados en la red de empleados | Propuesto |
+| D18 | 28/10 | RPO/RTO por servicio propuestos al cliente (tabla en `docs/ANALISIS-Y-ARRANQUE.md`) | El cliente pide que concretemos cuánto trabajo pueden perder | Un único RPO para todo | Propuesto; restauración medida en el lab |
+| D19 | 28/10 | Plan Windows 7: inventario, comprobar app antigua de nóminas, VLAN 99 de cuarentena, migrar o sustituir, app antigua en VM aislada | ~45 equipos sin parches desde 2020 | Mantenerlos en la red de usuarios | Propuesto |
+| D20 | 28/10 | Teletrabajo solo con equipos de la empresa (certificado VPN en equipo gestionado) | 45 portátiles para 65 teletrabajadores; un equipo propio no se puede cifrar ni gestionar | VPN desde equipos personales | Propuesto; déficit de portátiles al presupuesto |
+| D21 | 28/10 | Auditoría de cambios en datos bancarios con trigger y tabla de auditoría, además de pgaudit | El cliente quiere saber quién cambia una cuenta bancaria | Solo pgaudit | Implementar (nivel 1) |
+
 ## Pendiente de decidir
 - De quién es el PC de integración (32 GB).
 - Confirmar con el profesor fechas, si participa el módulo de aplicaciones web y si quiere ver las 3 sedes.

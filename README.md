@@ -1,5 +1,7 @@
 # Gestión Norte · Proyecto Intermodular 2º ASIR
 
+Equipo consultor: **Consultoría Kalima**. Para empezar: [`docs/ANALISIS-Y-ARRANQUE.md`](docs/ANALISIS-Y-ARRANQUE.md). Datos del cliente: [`docs/CLIENTE-GESTION-NORTE.md`](docs/CLIENTE-GESTION-NORTE.md).
+
 Rediseño de la infraestructura IT de Gestión Norte (asesoría laboral y fiscal, 150 personas, sedes en Zaragoza, Huesca y Teruel). Módulos: Redes, Seguridad y alta disponibilidad, Sistemas operativos y SGBD.
 
 **Entregas:** borrador 06/11 · final 17/11 23:59 · defensa 23-27/11 (fechas pendientes de confirmar: el enunciado pone 2025).
