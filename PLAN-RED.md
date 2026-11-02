@@ -46,7 +46,7 @@ Qué hace el router de sede:
 ## Seguridad de las VLAN (obligatorio en lab y en producción)
 - Laboratorio: VMnet11-19 solo anfitrión, sin DHCP de VMware y sin adaptador del PC. Ninguna VM salvo ubu-fw tiene más de una NIC.
 - ubu-fw: nftables con `policy drop` en input y forward, registro de lo denegado. `ip_forward` se activa **solo después** de cargar nftables.
-- Antisuplantación: `rp_filter=1` y comprobación `fib` en nftables (cada red solo entra por su interfaz). Sin redirecciones ICMP ni enrutamiento de origen. IPv6 desactivado (no se usa).
+- Antisuplantación: `rp_filter=1` (cada red solo entra por su interfaz). Sin redirecciones ICMP ni enrutamiento de origen. IPv6 desactivado (no se usa).
 - Servicios de ubu-fw solo donde hacen falta: DHCP/DNS en las VLAN de usuarios, SSH solo desde VLAN 10 y VPN-ADM, en la WAN solo 1194/udp (OpenVPN) y 51820/udp (WireGuard).
 - Producción (switches): puertos de acceso con su VLAN fija, VLAN nativa sin uso (nunca la 1), troncal solo hacia ubu-fw o el router de sede, puertos libres apagados, DHCP snooping y protección de puerto. 802.1X, propuesto.
 
