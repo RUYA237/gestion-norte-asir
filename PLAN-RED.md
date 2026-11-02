@@ -22,7 +22,6 @@ Si algo de aquí cambia, se cambia primero en este fichero y después en las con
 | 80 | INVITADOS | 10.1.80.0/24 | VMnet18 | Wi-Fi de visitas (red pública), aislada y solo Internet (D28) | Diseño |
 | 90 | VPN-USR | 10.1.90.0/24 | tun0 | Teletrabajo | Sí (paso VPN) |
 | 91 | VPN-ADM | 10.1.91.0/24 | tun0 (CCD) | Administradores en remoto | Sí (paso VPN) |
-| 99 | CUARENTENA | 10.1.99.0/24 | — | Temporal: equipos con Windows 7 hasta sustituirlos; sin Internet (D19) | Diseño |
 | — | WG-SEDES | 10.0.0.0/24 | wg0 | Túneles de los routers de sede a ubu-fw: ZGZ .1, Huesca .2, Teruel .3, 4ª sede .4 | Nivel 3 |
 | 30 (Hu) | LABORAL Huesca | 10.2.30.0/24 | VMnet19 | Detrás de rt-hue (Ubuntu mínima que simula el router de sede) | Nivel 3 (solo si sobra tiempo) |
 
@@ -36,7 +35,6 @@ Topología en estrella: **ubu-fw es el único firewall** de las tres sedes. Hues
 | 30-60 Departamentos | Sí | Sí | Sí | Personal de los 4 departamentos en todas (reparto estimado) |
 | 70 Impresoras | Sí (7) | Sí (3) | Sí (2) | Dato del cliente, 28/10 |
 | 80 Invitados | Sí | Sí | Sí | Salida directa a Internet por la fibra local, aislada; nunca entra en el túnel |
-| 99 Cuarentena | Si hay W7 | Si hay W7 | Si hay W7 | Temporal (D19) |
 
 Qué hace el router de sede:
 - Crea las VLAN de la sede (subinterfaces 802.1Q) con puerta de enlace 10.<sede>.<vlan>.1.
@@ -70,7 +68,6 @@ VMnet11-19: tipo host-only, **sin** "Use local DHCP service" y **sin** "Connect 
 - Departamento ↔ departamento: denegado.
 - Administración (SSH, RDP, WinRM) solo desde VLAN 10 o VPN-ADM a través del bastión.
 - Invitados: solo web a Internet. DNS solo hacia ubu-fw (el 53 directo a Internet se bloquea).
-- Cuarentena (VLAN 99): sin Internet; solo hacia los DC (inicio de sesión) y un recurso de ficheros de transición; nunca hacia la VLAN 20 completa ni hacia otras VLAN.
 - NAS (recurso SMB en dc1, D26): departamentos → 10.1.20.10:445/tcp, cada uno solo a su recurso (permisos AGDLP).
 
 ## SSH (acceso administrativo a Linux)

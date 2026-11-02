@@ -137,11 +137,10 @@ chip(xs[2], 698, cw, ch, "VLAN 50", "Administr. · 18", pc)
 chip(xs[3], 698, cw, ch, "VLAN 60", "Atención · 15", pc)
 chip(xs[0], 840, cw, ch, "VLAN 70", "Impresoras · 7", prn)
 chip(xs[1], 840, cw, ch, "VLAN 80", "Wi-Fi visitas", ap)
-chip(xs[2], 840, cw, ch, "VLAN 99", "Cuarentena W7", bad, dash="8 5")
-T(xs[3]+4, 872, "Departamentos:", 15, a="start", b=True)
-T(xs[3]+4, 893, "no se ven entre sí;", 15, a="start")
-T(xs[3]+4, 914, "Wi-Fi visitas:", 15, a="start", b=True)
-T(xs[3]+4, 935, "solo Internet", 15, a="start")
+T(xs[2]+4, 872, "Departamentos:", 16, a="start", b=True)
+T(xs[2]+4, 894, "no se ven entre sí", 16, a="start")
+T(xs[2]+4, 926, "Wi-Fi de visitas:", 16, a="start", b=True)
+T(xs[2]+4, 948, "solo sale a Internet", 16, a="start")
 
 # Sedes remotas
 def sede(x, name, sub, rt, n, prns):
@@ -156,7 +155,6 @@ def sede(x, name, sub, rt, n, prns):
     mini(c1, 782, mw, "VLAN 30", f"Laboral · {n[0]}"); mini(c2, 782, mw, "VLAN 40", f"Fiscal · {n[1]}")
     mini(c1, 840, mw, "VLAN 50", f"Administr. · {n[2]}"); mini(c2, 840, mw, "VLAN 60", f"Atención · {n[3]}")
     mini(c1, 898, mw, "VLAN 70", f"Impresoras · {prns}"); mini(c2, 898, mw, "VLAN 80", "Wi-Fi visitas")
-    T(x+18, 973, "VLAN 99 solo si hay equipos W7", 15, a="start")
 
 sede(772, "Huesca · 25 puestos", "10.2.x.x", "rt-hue", (10, 7, 4, 4), 3)
 sede(1135, "Teruel · 15 puestos", "10.3.x.x", "rt-ter", (6, 5, 3, 1), 2)
@@ -166,7 +164,6 @@ y = 1012
 L([(30, y), (90, y)], sw=2.5); T(98, y+6, "enlace físico", 16, a="start")
 L([(235, y), (295, y)], sw=2, dash="9 6"); T(303, y+6, "túnel cifrado por Internet", 16, a="start")
 R(530, y-12, 40, 24, sw=3); T(578, y+6, "se monta en el laboratorio", 16, a="start")
-R(800, y-12, 40, 24, sw=1.4, dash="8 5"); T(848, y+6, "temporal (equipos con Windows 7)", 16, a="start")
 T(30, y+40, "Puestos por departamento en cada sede: estimación proporcional, pendiente de verificar. "
             "Impresoras por sede: dato del cliente (28/10). Cuarta sede futura: 10.4.x.x con el mismo esquema que Huesca y Teruel.", 15, a="start")
 
