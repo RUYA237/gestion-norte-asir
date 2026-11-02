@@ -22,9 +22,35 @@ Si algo de aquí cambia, se cambia primero en este fichero y después en las con
 | 80 | INVITADOS | 10.1.80.0/24 | VMnet18 | Wi-Fi de visitas (red pública), aislada y solo Internet (D28) | Diseño |
 | 90 | VPN-USR | 10.1.90.0/24 | tun0 | Teletrabajo | Sí (paso VPN) |
 | 91 | VPN-ADM | 10.1.91.0/24 | tun0 (CCD) | Administradores en remoto | Sí (paso VPN) |
-| 99 | CUARENTENA | 10.1.99.0/24 | — | Equipos con Windows 7 hasta migrarlos; sin Internet (D19) | Diseño |
-| — | WG-SEDES | 10.0.0.0/24 | wg0 | Túneles: ZGZ .1, Huesca .2, Teruel .3 | Nivel 3 |
-| 30 (Hu) | LABORAL Huesca | 10.2.30.0/24 | VMnet19 | VM de Huesca que simula la sede | Nivel 3 (solo si sobra tiempo) |
+| 99 | CUARENTENA | 10.1.99.0/24 | — | Temporal: equipos con Windows 7 hasta sustituirlos; sin Internet (D19) | Diseño |
+| — | WG-SEDES | 10.0.0.0/24 | wg0 | Túneles de los routers de sede a ubu-fw: ZGZ .1, Huesca .2, Teruel .3, 4ª sede .4 | Nivel 3 |
+| 30 (Hu) | LABORAL Huesca | 10.2.30.0/24 | VMnet19 | Detrás de rt-hue (Ubuntu mínima que simula el router de sede) | Nivel 3 (solo si sobra tiempo) |
+
+## Sedes remotas (D30)
+Topología en estrella: **ubu-fw es el único firewall** de las tres sedes. Huesca y Teruel no tienen servidor ni firewall propio, solo un router pequeño con VPN (rt-hue, rt-ter) y un switch gestionable.
+
+| VLAN | Zaragoza | Huesca | Teruel | Motivo |
+|---|---|---|---|---|
+| 10 Gestión | Sí | No | No | IT en Zaragoza; las sedes se administran por VPN-ADM |
+| 20 Servidores | Sí (núcleo central) | No | No | Los 2 servidores están en Zaragoza; el presupuesto no da para servidores por sede |
+| 30-60 Departamentos | Sí | Sí | Sí | Personal de los 4 departamentos en todas (reparto estimado) |
+| 70 Impresoras | Sí (7) | Sí (3) | Sí (2) | Dato del cliente, 28/10 |
+| 80 Invitados | Sí | Sí | Sí | Salida directa a Internet por la fibra local, aislada; nunca entra en el túnel |
+| 99 Cuarentena | Si hay W7 | Si hay W7 | Si hay W7 | Temporal (D19) |
+
+Qué hace el router de sede:
+- Crea las VLAN de la sede (subinterfaces 802.1Q) con puerta de enlace 10.<sede>.<vlan>.1.
+- Envía **todo** el tráfico de las VLAN de empresa por WireGuard a ubu-fw (ruta por defecto por el túnel). No enruta entre sus VLAN locales: quien decide es ubu-fw.
+- DHCP de las VLAN de empresa con relay hacia Kea; DHCP local solo para la VLAN 80.
+- VLAN 80: única salida local a Internet, aislada del resto.
+- Riesgo asumido: si cae la fibra de Zaragoza, las tres sedes se quedan sin servicio → línea 4G/5G de respaldo imprescindible en Zaragoza.
+
+## Seguridad de las VLAN (obligatorio en lab y en producción)
+- Laboratorio: VMnet11-19 solo anfitrión, sin DHCP de VMware y sin adaptador del PC. Ninguna VM salvo ubu-fw tiene más de una NIC.
+- ubu-fw: nftables con `policy drop` en input y forward, registro de lo denegado. `ip_forward` se activa **solo después** de cargar nftables.
+- Antisuplantación: `rp_filter=1` y comprobación `fib` en nftables (cada red solo entra por su interfaz). Sin redirecciones ICMP ni enrutamiento de origen. IPv6 desactivado (no se usa).
+- Servicios de ubu-fw solo donde hacen falta: DHCP/DNS en las VLAN de usuarios, SSH solo desde VLAN 10 y VPN-ADM, en la WAN solo 1194/udp (OpenVPN) y 51820/udp (WireGuard).
+- Producción (switches): puertos de acceso con su VLAN fija, VLAN nativa sin uso (nunca la 1), troncal solo hacia ubu-fw o el router de sede, puertos libres apagados, DHCP snooping y protección de puerto. 802.1X, propuesto.
 
 VMnet11-19: tipo host-only, **sin** "Use local DHCP service" y **sin** "Connect a host virtual adapter".
 
@@ -44,7 +70,7 @@ VMnet11-19: tipo host-only, **sin** "Use local DHCP service" y **sin** "Connect 
 - Departamento ↔ departamento: denegado.
 - Administración (SSH, RDP, WinRM) solo desde VLAN 10 o VPN-ADM a través del bastión.
 - Invitados: solo web a Internet. DNS solo hacia ubu-fw (el 53 directo a Internet se bloquea).
-- Cuarentena (VLAN 99): sin Internet y solo hacia el servidor de ficheros; nunca hacia la VLAN 20 completa.
+- Cuarentena (VLAN 99): sin Internet; solo hacia los DC (inicio de sesión) y un recurso de ficheros de transición; nunca hacia la VLAN 20 completa ni hacia otras VLAN.
 - NAS (recurso SMB en dc1, D26): departamentos → 10.1.20.10:445/tcp, cada uno solo a su recurso (permisos AGDLP).
 
 ## SSH (acceso administrativo a Linux)
