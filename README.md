@@ -50,3 +50,14 @@ Documentos raíz: [`DECISIONES.md`](DECISIONES.md) (registro de decisiones) y [`
 - Instantánea de VMware antes de cada paso importante.
 - No afirmar cumplimiento del RGPD: "alineado con" o "propuesta para cumplir".
 - Si una decisión cambia, se cambia primero en `DECISIONES.md`.
+
+## Cómo se sube algo (sin saber Git)
+Después de cada tarea, el chat te da el bloque de comandos. Siempre es este y solo cambia el mensaje:
+```powershell
+cd RUTA\gestion-norte-asir
+git pull --rebase
+git add .
+git commit -m "Qué has hecho. Refs #número"
+git push
+```
+Si algo falla, copia el error entero en el chat. Los ficheros nuevos se copian antes a la carpeta que toque (`red/`, `ad/`, `bd/`, `evidencias/<módulo>/`, `memoria/`).

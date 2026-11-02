@@ -19,11 +19,12 @@ Si algo de aquí cambia, se cambia primero en este fichero y después en las con
 | 50 | ADMIN | 10.1.50.0/24 | VMnet15 | Administración y facturación | Diseño |
 | 60 | ATENCION | 10.1.60.0/24 | VMnet16 | Atención y gestión de clientes | Diseño |
 | 70 | IMPRESORAS | 10.1.70.0/24 | VMnet17 | Impresoras y multifunción | Diseño |
-| 80 | INVITADOS | 10.1.80.0/24 | VMnet18 | Wi-Fi de visitas, solo Internet | Diseño |
+| 80 | INVITADOS | 10.1.80.0/24 | VMnet18 | Wi-Fi de visitas (red pública), aislada y solo Internet (D28) | Diseño |
 | 90 | VPN-USR | 10.1.90.0/24 | tun0 | Teletrabajo | Sí (paso VPN) |
 | 91 | VPN-ADM | 10.1.91.0/24 | tun0 (CCD) | Administradores en remoto | Sí (paso VPN) |
-| — | WG-SEDES | 10.0.0.0/24 | wg0 | Túneles: ZGZ .1, Huesca .2, Teruel .3 | Huesca |
-| 30 (Hu) | LABORAL Huesca | 10.2.30.0/24 | VMnet19 | VM de Huesca que simula la sede | Sí |
+| 99 | CUARENTENA | 10.1.99.0/24 | — | Equipos con Windows 7 hasta migrarlos; sin Internet (D19) | Diseño |
+| — | WG-SEDES | 10.0.0.0/24 | wg0 | Túneles: ZGZ .1, Huesca .2, Teruel .3 | Nivel 3 |
+| 30 (Hu) | LABORAL Huesca | 10.2.30.0/24 | VMnet19 | VM de Huesca que simula la sede | Nivel 3 (solo si sobra tiempo) |
 
 VMnet11-19: tipo host-only, **sin** "Use local DHCP service" y **sin** "Connect a host virtual adapter".
 
@@ -43,6 +44,8 @@ VMnet11-19: tipo host-only, **sin** "Use local DHCP service" y **sin** "Connect 
 - Departamento ↔ departamento: denegado.
 - Administración (SSH, RDP, WinRM) solo desde VLAN 10 o VPN-ADM a través del bastión.
 - Invitados: solo web a Internet. DNS solo hacia ubu-fw (el 53 directo a Internet se bloquea).
+- Cuarentena (VLAN 99): sin Internet y solo hacia el servidor de ficheros; nunca hacia la VLAN 20 completa.
+- NAS (recurso SMB en dc1, D26): departamentos → 10.1.20.10:445/tcp, cada uno solo a su recurso (permisos AGDLP).
 
 ## SSH (acceso administrativo a Linux)
 
@@ -50,12 +53,12 @@ Solo Linux usa SSH. Windows se administra con PowerShell Remoting (WinRM), no co
 
 | Origen | Destino | Puerto | Regla |
 |---|---|---|---|
-| VLAN 10 (GESTION) | ubu-fw, ubu-svc, bkp01 | 22/tcp | Permitido |
+| VLAN 10 (GESTION) | ubu-fw, ubu-svc, wazuh01, bkp01 | 22/tcp | Permitido |
 | VPN-ADM (10.1.91.0/24) | ubu-fw (salto) | 22/tcp | Permitido, solo hacia el bastión |
 | Resto de VLAN y VPN-USR | cualquier Linux | 22/tcp | Denegado y registrado |
 | Internet | ubu-fw | 22/tcp | Denegado (solo se llega por VPN) |
 
-Solo el bastión (ubu-fw) acepta conexiones desde fuera de sus VLAN. Desde ubu-fw se salta a ubu-svc y bkp01 con `ssh -J` o `ProxyJump`.
+Solo el bastión (ubu-fw) acepta conexiones desde fuera de sus VLAN. Desde ubu-fw se salta a ubu-svc, wazuh01 y bkp01 con `ssh -J` o `ProxyJump`.
 
 **Configuración de sshd en cada Linux:**
 - Solo clave pública (`PasswordAuthentication no`, `KbdInteractiveAuthentication no`).
@@ -71,7 +74,7 @@ Solo el bastión (ubu-fw) acepta conexiones desde fuera de sus VLAN. Desde ubu-f
 
 | Pieza | Estado | Nivel |
 |---|---|---|
-| SSH con clave, sin root y con grupo permitido en ubu-fw, ubu-svc y bkp01 | Pendiente de verificar | 1 |
+| SSH con clave, sin root y con grupo permitido en ubu-fw, ubu-svc, wazuh01 y bkp01 | Pendiente de verificar | 1 |
 | Reglas nftables de acceso a 22/tcp (desde VLAN 10 y VPN-ADM) | Pendiente de verificar | 1 |
 | Intentos fallidos enviados a Wazuh | Pendiente de verificar | 2 |
 | fail2ban | Pendiente de verificar | 2 |
