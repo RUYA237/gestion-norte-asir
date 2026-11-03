@@ -1,4 +1,3 @@
-# ubu-fw · /etc/netplan/config-red-vlan.yaml. Sustituye MAC_* por las MAC reales (ver docs).
 network:
   version: 2
   renderer: networkd
