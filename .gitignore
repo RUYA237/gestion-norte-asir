@@ -21,3 +21,7 @@
 .DS_Store
 Thumbs.db
 ~$*
+# Maqueta containerlab: claves de WireGuard y carpeta que crea containerlab
+red/clab/claves/
+red/clab/clab-*/
+red/clab/*.bak
