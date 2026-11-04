@@ -1,0 +1,127 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20261103210101
+Nombre de usuario: DC1\Administrador
+Usuario RunAs: DC1\Administrador
+Nombre de la configuración: 
+Máquina: DC1 (Microsoft Windows NT 10.0.26100.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Id. de proceso: 4964
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+========================================================================
+  SCRIPT 01 - PREPARACIÓN DE DC1
+========================================================================
+[ INFO ] Proyecto Gestión Norte - Consultoría Kalima
+[ INFO ] Ejecutado por : DC1\Administrador
+[ INFO ] Fecha y hora  : 03/11/2026 21:01:01
+[ INFO ] Log           : C:\Evidencias\01-preparar-dc1-20261103-210101.log
+
+========================================================================
+  3. ESTADO PREVIO DEL EQUIPO
+========================================================================
+[ INFO ] Nombre actual   : DC1
+[ INFO ] Grupo de trabajo: WORKGROUP
+[ INFO ] ¿En dominio?    : False
+[ INFO ] Zona horaria    : Romance Standard Time
+
+[ INFO ] Adaptadores de red detectados:
+
+Name       InterfaceDescription                       Status MacAddress        LinkSpeed
+----       --------------------                       ------ ----------        ---------
+LAN-VLAN20 Intel(R) 82574L Gigabit Network Connection Up     00-0C-29-FE-90-92 1 Gbps
+
+
+[ INFO ] Direcciones IPv4 actuales:
+
+InterfaceAlias IPAddress      PrefixLength PrefixOrigin
+-------------- ---------      ------------ ------------
+LAN-VLAN20     169.254.170.41           16    WellKnown
+
+
+
+========================================================================
+  4. COMPROBACIÓN DE IP DUPLICADA (10.1.20.10)
+========================================================================
+[ INFO ] Lanzando petición ARP hacia 10.1.20.10 ...
+[ INFO ] Consultando la tabla ARP del segmento ...
+[  OK  ] La dirección 10.1.20.10 no aparece en la ARP del segmento. Se puede asignar.
+
+========================================================================
+  5. COMPROBACIÓN DEL NOMBRE DE EQUIPO (dc1)
+========================================================================
+[AVISO ] El nombre dc1 ya resuelve a 169.254.170.41, distinta de la prevista (10.1.20.10).
+[AVISO ] Revisa si hay otro equipo con ese nombre antes de continuar.
+
+========================================================================
+  6. CONFIGURACIÓN DE RED
+========================================================================
+[ INFO ] Adaptador seleccionado: 'LAN-VLAN20' - MAC 00-0C-29-FE-90-92 - estado Up
+[ INFO ] El adaptador ya se llama 'LAN-VLAN20'.
+[  OK  ] DHCP desactivado en el adaptador (esta máquina usa IP fija).
+[  OK  ] Configuración IPv4 anterior eliminada.
+[  OK  ] IP 10.1.20.10/24 asignada, puerta de enlace 10.1.20.1.
+[  OK  ] Servidor DNS configurado: 10.1.20.10
+
+[ INFO ] Comprobación de conectividad con la puerta de enlace (ubu-fw):
+[AVISO ] La puerta de enlace 10.1.20.1 no responde.
+[AVISO ] Puede ser normal si ubu-fw aún no está montado o si filtra ICMP. Anótalo en la bitácora.
+
+========================================================================
+  7. ZONA HORARIA Y REGIÓN
+========================================================================
+[  OK  ] Zona horaria establecida: Romance Standard Time
+[ INFO ] La hora del dominio la impondrá el PDC Emulator. El resto de equipos (y los
+[ INFO ] Ubuntu con chrony) se sincronizarán contra él. Kerberos no tolera más de 5
+[ INFO ] minutos de desfase: un reloj mal puesto rompe el inicio de sesión.
+[  OK  ] Configuración regional: España.
+
+========================================================================
+  8. NOMBRE DEL EQUIPO
+========================================================================
+[ INFO ] El equipo ya se llama dc1. No se renombra.
+
+========================================================================
+  9. ESTADO FINAL - RESUMEN DE VERIFICACIÓN
+========================================================================
+
+Configuración de red resultante:
+
+
+InterfaceAlias     : LAN-VLAN20
+IPv4Address        : {10.1.20.10}
+IPv4DefaultGateway : {MSFT_NetRoute (InstanceID = ":8:8:8:9:55?55;:8;8?:8;55;")}
+DNSServer          : {MSFT_DNSClientServerAddress (Name = "3", CreationClassName = "", SystemCreationClassName = "",
+                     SystemName = "23"), MSFT_DNSClientServerAddress (Name = "3", CreationClassName = "",
+                     SystemCreationClassName = "", SystemName = "2")}
+
+
+
+Resumen:
+
+
+Nombre (tras reinicio) : dc1
+Adaptador              : LAN-VLAN20
+Dirección IP           : 10.1.20.10/24
+Puerta de enlace       : 10.1.20.1
+Servidor DNS           : 10.1.20.10
+Zona horaria           : Romance Standard Time
+Firewall activo        : True, True, True
+
+
+
+
+[  OK  ] Script 01 finalizado. Log guardado en: C:\Evidencias\01-preparar-dc1-20261103-210101.log
+[ INFO ] SIGUIENTE PASO: reiniciar y ejecutar el script 02 (promoción a controlador de dominio).
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20261103210114
+**********************

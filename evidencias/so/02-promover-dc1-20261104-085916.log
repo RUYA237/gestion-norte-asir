@@ -1,0 +1,67 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20261104085916
+Nombre de usuario: DC1\Administrador
+Usuario RunAs: DC1\Administrador
+Nombre de la configuración: 
+Máquina: DC1 (Microsoft Windows NT 10.0.26100.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Id. de proceso: 1564
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+========================================================================
+  SCRIPT 02 - PROMOCIÓN DE DC1 A CONTROLADOR DE DOMINIO
+========================================================================
+[ INFO ] Dominio       : ad.gestionnorte.es  (NetBIOS: GESTIONNORTE)
+[ INFO ] Ejecutado por : DC1\Administrador
+[ INFO ] Fecha y hora  : 04/11/2026 08:59:16
+[ INFO ] Log           : C:\Evidencias\02-promover-dc1-20261104-085916.log
+
+========================================================================
+  2. PRECONDICIONES
+========================================================================
+[  OK  ] Nombre del equipo: DC1
+[  OK  ] IP fija 10.1.20.10 presente.
+[  OK  ] El DNS del equipo apunta a sí mismo (10.1.20.10).
+[  OK  ] El equipo no es todavía controlador de dominio.
+[ INFO ] Hora actual: 04/11/2026 08:59:18  Zona: Romance Standard Time
+[ INFO ] Comprueba que la hora es correcta: Kerberos no tolera más de 5 minutos de desfase.
+
+========================================================================
+  3. CONTRASEÑA DEL MODO DE RESTAURACIÓN (DSRM)
+========================================================================
+[ INFO ] Es la contraseña de emergencia para reparar AD. Guárdala en el gestor compartido,
+[ INFO ] NUNCA en Git ni en este script. Mínimo 12 caracteres, con mayúsculas, minúsculas, números y símbolos.
+[AVISO ] La contraseña no cumple la complejidad mínima. Otra vez.
+[  OK  ] Contraseña DSRM aceptada (no se guarda en ningún fichero).
+
+========================================================================
+  4. INSTALACIÓN DE ROLES AD DS Y DNS
+========================================================================
+[  OK  ] Roles instalados. Reinicio necesario por los roles: No
+
+========================================================================
+  5. CREACIÓN DEL BOSQUE ad.gestionnorte.es
+========================================================================
+[ INFO ] Esto tarda unos minutos. No cierres la ventana.
+ADVERTENCIA: No se puede crear una delegación para este servidor DNS porque la zona principal autoritativa no se encuentra o no ejecuta el servidor DNS de Windows. Si está realizando una integración en una infraestructura DNS existente, debe crear manualmente una delegación a este servidor DNS en la zona principal para garantizar una resolución de nombres confiable desde fuera del dominio "ad.gestionnorte.es". De lo contrario, no es preciso realizar ninguna acción.
+ADVERTENCIA: No se puede crear una delegación para este servidor DNS porque la zona principal autoritativa no se encuentra o no ejecuta el servidor DNS de Windows. Si está realizando una integración en una infraestructura DNS existente, debe crear manualmente una delegación a este servidor DNS en la zona principal para garantizar una resolución de nombres confiable desde fuera del dominio "ad.gestionnorte.es". De lo contrario, no es preciso realizar ninguna acción.
+[  OK  ] Bosque ad.gestionnorte.es creado. Falta reiniciar para terminar la promoción.
+
+========================================================================
+  6. RESUMEN
+========================================================================
+[ INFO ] Tras reiniciar, inicia sesión como GESTIONNORTE\Administrador y ejecuta el script 03.
+[  OK  ] Script 02 finalizado. Log guardado en: C:\Evidencias\02-promover-dc1-20261104-085916.log
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20261104090908
+**********************

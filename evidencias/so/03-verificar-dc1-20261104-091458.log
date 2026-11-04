@@ -1,0 +1,118 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20261104091501
+Nombre de usuario: GESTIONNORTE\Administrador
+Usuario RunAs: GESTIONNORTE\Administrador
+Nombre de la configuración: 
+Máquina: DC1 (Microsoft Windows NT 10.0.26100.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Id. de proceso: 2344
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+========================================================================
+  SCRIPT 03 - VERIFICACIÓN DE DC1
+========================================================================
+[ INFO ] Ejecutado por : GESTIONNORTE\Administrador
+[ INFO ] Fecha y hora  : 04/11/2026 09:15:01
+
+========================================================================
+  1. ZONA INVERSA
+========================================================================
+[  OK  ] Zona inversa creada para 10.1.20.0/24 (actualización dinámica segura).
+
+========================================================================
+  2. REENVIADOR DNS
+========================================================================
+[  OK  ] Reenviador configurado: 10.1.20.1 (ubu-fw / Unbound).
+[AVISO ] Si ubu-fw aún no está operativo, los nombres de Internet no resolverán; AD funciona igual.
+
+========================================================================
+  3. DOMINIO Y BOSQUE
+========================================================================
+
+
+DNSRoot              : ad.gestionnorte.es
+NetBIOSName          : GESTIONNORTE
+DomainMode           : Windows2025Domain
+PDCEmulator          : dc1.ad.gestionnorte.es
+InfrastructureMaster : dc1.ad.gestionnorte.es
+RIDMaster            : dc1.ad.gestionnorte.es
+
+
+
+
+
+Name               : ad.gestionnorte.es
+ForestMode         : Windows2025Forest
+SchemaMaster       : dc1.ad.gestionnorte.es
+DomainNamingMaster : dc1.ad.gestionnorte.es
+
+
+
+
+Name Site                    IPv4Address IsGlobalCatalog OperatingSystem
+---- ----                    ----------- --------------- ---------------
+DC1  Default-First-Site-Name 10.1.20.10             True Windows Server 2025 Standard Evaluation
+
+
+
+========================================================================
+  4. ROLES FSMO
+========================================================================
+
+
+========================================================================
+  5. ZONAS DNS
+========================================================================
+
+ZoneName                  ZoneType IsDsIntegrated IsReverseLookupZone DynamicUpdate
+--------                  -------- -------------- ------------------- -------------
+_msdcs.ad.gestionnorte.es Primary            True               False Secure
+0.in-addr.arpa            Primary           False                True None
+127.in-addr.arpa          Primary           False                True None
+20.1.10.in-addr.arpa      Primary            True                True Secure
+255.in-addr.arpa          Primary           False                True None
+ad.gestionnorte.es        Primary            True               False Secure
+
+
+[ INFO ] Reenviadores: 10.1.20.1
+
+========================================================================
+  6. REGISTROS SRV (localización del controlador)
+========================================================================
+[  OK  ] El registro SRV _ldap._tcp.dc._msdcs existe:
+
+Name                                    NameTarget             Port
+----                                    ----------             ----
+_ldap._tcp.dc._msdcs.ad.gestionnorte.es dc1.ad.gestionnorte.es  389
+dc1.ad.gestionnorte.es
+
+
+
+
+========================================================================
+  7. HORA
+========================================================================
+
+[ INFO ] dc1 es el PDC Emulator: es la referencia de hora del dominio. Los Ubuntu se sincronizan contra él.
+
+========================================================================
+  8. DCDIAG
+========================================================================
+
+[  OK  ] dcdiag /q no devuelve errores (silencio = todo correcto).
+
+[  OK  ] Script 03 finalizado. Log guardado en: C:\Evidencias\03-verificar-dc1-20261104-091458.log
+[ INFO ] SIGUIENTE PASO: avisar a Raúl (reenvío de zona en Unbound) y ejecutar los scripts 04 y 05.
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20261104091513
+**********************
