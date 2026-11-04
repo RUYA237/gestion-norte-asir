@@ -2,7 +2,7 @@
 
 Simula la red real de Gestión Norte, que VMware no puede simular: switches con VLAN 802.1Q y troncales, las tres sedes, los túneles WireGuard hasta ubu-fw y OSPF con la línea 4G de respaldo. Los servicios (Kea, Unbound, Active Directory) siguen en el laboratorio de VMware; aquí solo se prueba la red.
 
-Estado: preparado el 04/11, **pendiente de verificar** (primer despliegue en clab01).
+Estado: preparado el 04/11, **pendiente de verificar** (primer despliegue en WSL).
 
 ## Qué hay
 
@@ -27,29 +27,53 @@ Todo usa una sola imagen, `gn-red:1.0` (Ubuntu 24.04 con FRR, nftables, WireGuar
 | `gen-claves.sh` | Genera las claves de WireGuard en `claves/` (no se suben a Git) |
 | `pruebas.sh` | Las 6 pruebas de la memoria, una captura por bloque |
 
-## Cómo arrancarla (primera vez)
+## Cómo arrancarla (primera vez, en WSL)
 
-**1. Máquina virtual `clab01` en VMware.** Ubuntu Server 24.04, 2 CPU, 4 GB de RAM, 25 GB de disco, una sola tarjeta en **NAT (VMnet8)**. En la instalación, marca *Install OpenSSH server*. Es independiente del resto del laboratorio: no se conecta a ningún VMnet de las VLAN.
+La maqueta corre dentro de WSL2 (Ubuntu 24.04) en el PC de Raúl, sin máquina virtual de VMware. Docker va **dentro de WSL** (Docker Engine), no con Docker Desktop. Los comandos de los pasos 1 y 2 se pegan en PowerShell; el resto, en la terminal de Ubuntu.
 
-**2. Entra por SSH desde Windows** (así se puede pegar). En la consola de VMware mira la IP con `ip -br a`; luego, en PowerShell:
+**1. WSL2 con Ubuntu 24.04** (PowerShell como administrador; si ya lo tienes, `wsl -l -v` debe mostrar Ubuntu-24.04 con VERSION 2):
 
 ```
-ssh raul@IP_DE_CLAB01
+wsl --install -d Ubuntu-24.04
 ```
 
-**3. Instala Docker y containerlab** (script oficial de containerlab) y prepara el kernel:
+Reinicia si lo pide y crea tu usuario de Linux. Nota: WSL2 usa la plataforma de virtualización de Windows; VMware Workstation 17 convive con ella pero puede ir más lento.
+
+**2. Memoria y systemd.** Crea `C:\Users\RUYA\.wslconfig` con 6 GB (4 GB para la maqueta y el resto para Linux):
+
+```
+[wsl2]
+memory=6GB
+processors=2
+```
+
+En Ubuntu activa systemd (Docker lo necesita) y reinicia WSL:
+
+```
+printf '[boot]\nsystemd=true\n' | sudo tee /etc/wsl.conf
+```
+
+```
+wsl --shutdown
+```
+
+**3. Comprueba que el kernel de WSL sirve** (en Ubuntu). Deben salir los dos «OK»; si no, `wsl --update` en PowerShell y repite:
+
+```
+sudo ip link add brtest type bridge vlan_filtering 1 && sudo ip link del brtest && echo "Puente con VLAN: OK"
+sudo ip link add wgtest type wireguard && sudo ip link del wgtest && echo "WireGuard: OK"
+```
+
+**4. Instala Docker y containerlab** (script oficial de containerlab):
 
 ```
 curl -sL https://containerlab.dev/setup | sudo -E bash -s "all"
-sudo modprobe wireguard
-echo wireguard | sudo tee /etc/modules-load.d/wireguard.conf
-echo net.netfilter.nf_log_all_netns=1 | sudo tee /etc/sysctl.d/90-clab-logs.conf
-sudo sysctl --system
+sudo sysctl -w net.netfilter.nf_log_all_netns=1 || echo "sin registro del firewall en dmesg (no es grave)"
 ```
 
-Cierra la sesión SSH y vuelve a entrar (para que tu usuario quede en el grupo de Docker).
+Cierra Ubuntu, vuelve a abrirlo (para que tu usuario quede en el grupo de Docker) y comprueba `docker run --rm hello-world`.
 
-**4. Descarga el repositorio** (es privado: `gh` te da un código para autorizarlo en el navegador de Windows):
+**5. Descarga el repositorio dentro de Linux** (en `~`, no en `/mnt/c`: los enlaces y permisos fallan en el disco de Windows). Es privado: `gh` te da un código para autorizarlo en el navegador de Windows:
 
 ```
 sudo apt install -y gh
@@ -59,7 +83,7 @@ git config --global user.name "Raúl"
 git config --global user.email "TU_CORREO"
 ```
 
-**5. Crea la imagen, las claves y despliega:**
+**6. Crea la imagen, las claves y despliega:**
 
 ```
 cd ~/gestion-norte-asir/red/clab
@@ -70,13 +94,13 @@ sudo containerlab deploy -t gestion-norte.clab.yml
 
 Al final sale una tabla con los 16 nodos en estado `running`. Cada nodo imprime «… configurado» durante el despliegue; si alguno da error, cópialo tal cual.
 
-**6. Diagrama automático** (captura para la memoria). Abre en el navegador de Windows `http://IP_DE_CLAB01:50080`:
+**7. Diagrama automático** (captura para la memoria). Abre en el navegador de Windows `http://localhost:50080`:
 
 ```
 sudo containerlab graph -t gestion-norte.clab.yml
 ```
 
-**7. Pruebas** (espera 20 s después del despliegue para que STP y OSPF terminen). Cada una es una captura; además se guarda la salida en texto como evidencia:
+**8. Pruebas** (espera 20 s después del despliegue para que STP y OSPF terminen). Cada una es una captura; además se guarda la salida en texto como evidencia:
 
 ```
 sudo ./pruebas.sh 1 | tee ~/gestion-norte-asir/evidencias/redes/20261105-raul-clab-p1.txt
