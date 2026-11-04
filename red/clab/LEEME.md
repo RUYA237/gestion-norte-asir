@@ -27,7 +27,34 @@ Todo usa una sola imagen, `gn-red:1.0` (Ubuntu 24.04 con FRR, nftables, WireGuar
 | `gen-claves.sh` | Genera las claves de WireGuard en `claves/` (no se suben a Git) |
 | `pruebas.sh` | Las 6 pruebas de la memoria, una captura por bloque |
 
-## Cómo arrancarla (primera vez, en WSL)
+## Ruta actual: contenedor en Docker Desktop (D37)
+
+Raúl ha decidido no usar WSL. La maqueta corre en un contenedor `gestion-containerlab-red` creado desde Windows con Docker Desktop. Sin `--privileged`, con solo las capacidades que necesita.
+
+**1. Crear el contenedor (PowerShell de Windows):**
+
+```
+docker run -it --name gestion-containerlab-red --cap-add NET_ADMIN --cap-add SYS_ADMIN --pid host -v //var/run/docker.sock://var/run/docker.sock ubuntu:24.04 bash
+```
+
+- `NET_ADMIN`: crear interfaces, puentes y rutas.
+- `SYS_ADMIN`: montar los espacios de red de cada nodo. Es la más amplia de las dos; se justifica en la memoria.
+- `--pid host`: localizar los procesos de los nodos.
+- El montaje del socket: sin él, containerlab no puede pedir al demonio que cree los nodos. Equivale a root en el anfitrión.
+
+**2. Dentro del contenedor:**
+
+```
+apt update && apt install -y curl git gh docker.io wireguard-tools iproute2 ca-certificates
+gh auth login
+gh repo clone RUYA237/gestion-norte-asir ~/gestion-norte-asir
+gh auth logout -h github.com
+ls ~/gestion-norte-asir/red/clab/gestion-norte.clab.yml
+```
+
+Estado 04/11: clonado y comprobado (la sesión de GitHub se cierra después del clon). **Pendiente:** instalar containerlab dentro del contenedor, `deploy` y pruebas P1-P6. Si el `deploy` pide otra capacidad, se añade esa y no `--privileged`.
+
+## Cómo arrancarla (primera vez, en WSL: ruta descartada por D37)
 
 La maqueta corre dentro de WSL2 (Ubuntu 24.04) en el PC de Raúl, sin máquina virtual de VMware. Docker va **dentro de WSL** (Docker Engine), no con Docker Desktop. Los comandos de los pasos 1 y 2 se pegan en PowerShell; el resto, en la terminal de Ubuntu.
 
