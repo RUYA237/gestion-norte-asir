@@ -1,0 +1,208 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20261104095226
+Nombre de usuario: GESTIONNORTE\Administrador
+Usuario RunAs: GESTIONNORTE\Administrador
+Nombre de la configuración: 
+Máquina: DC1 (Microsoft Windows NT 10.0.26100.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Id. de proceso: 2344
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+========================================================================
+  SCRIPT 04 - SITIOS, SUBREDES Y UNIDADES ORGANIZATIVAS
+========================================================================
+[ INFO ] Ejecutado por : GESTIONNORTE\Administrador
+[ INFO ] Fecha y hora  : 04/11/2026 09:52:27
+[ INFO ] Log           : C:\Evidencias\04-estructura-dc1-20261104-095226.log
+
+========================================================================
+  1. PRECONDICIONES
+========================================================================
+[  OK  ] Dominio: ad.gestionnorte.es  (DC=ad,DC=gestionnorte,DC=es)
+
+========================================================================
+  2. SITIOS DE ACTIVE DIRECTORY
+========================================================================
+[  OK  ] Sitio 'Default-First-Site-Name' renombrado a 'Zaragoza' (dc1 sigue dentro de él).
+[ INFO ] El sitio 'Zaragoza' ya existe.
+[  OK  ] Sitio creado: Huesca
+[  OK  ] Sitio creado: Teruel
+
+========================================================================
+  3. SUBREDES
+========================================================================
+[  OK  ] Subred 10.1.10.0/24 -> sitio Zaragoza  (VLAN 10 Gestion - Zaragoza)
+[  OK  ] Subred 10.1.20.0/24 -> sitio Zaragoza  (VLAN 20 Servidores - Zaragoza)
+[  OK  ] Subred 10.1.30.0/24 -> sitio Zaragoza  (VLAN 30 Laboral - Zaragoza)
+[  OK  ] Subred 10.1.40.0/24 -> sitio Zaragoza  (VLAN 40 Fiscal - Zaragoza)
+[  OK  ] Subred 10.1.50.0/24 -> sitio Zaragoza  (VLAN 50 Administracion - Zaragoza)
+[  OK  ] Subred 10.1.60.0/24 -> sitio Zaragoza  (VLAN 60 Atencion - Zaragoza)
+[  OK  ] Subred 10.1.70.0/24 -> sitio Zaragoza  (VLAN 70 Impresoras - Zaragoza)
+[  OK  ] Subred 10.1.80.0/24 -> sitio Zaragoza  (VLAN 80 Invitados - Zaragoza)
+[  OK  ] Subred 10.1.90.0/24 -> sitio Zaragoza  (VLAN 90 VPN usuarios - Zaragoza)
+[  OK  ] Subred 10.1.91.0/24 -> sitio Zaragoza  (VLAN 91 VPN administradores - Zaragoza)
+[  OK  ] Subred 10.2.30.0/24 -> sitio Huesca  (VLAN 30 Laboral - Huesca)
+[  OK  ] Subred 10.2.40.0/24 -> sitio Huesca  (VLAN 40 Fiscal - Huesca)
+[  OK  ] Subred 10.2.50.0/24 -> sitio Huesca  (VLAN 50 Administracion - Huesca)
+[  OK  ] Subred 10.2.60.0/24 -> sitio Huesca  (VLAN 60 Atencion - Huesca)
+[  OK  ] Subred 10.2.70.0/24 -> sitio Huesca  (VLAN 70 Impresoras - Huesca)
+[  OK  ] Subred 10.2.80.0/24 -> sitio Huesca  (VLAN 80 Invitados - Huesca)
+[  OK  ] Subred 10.3.30.0/24 -> sitio Teruel  (VLAN 30 Laboral - Teruel)
+[  OK  ] Subred 10.3.40.0/24 -> sitio Teruel  (VLAN 40 Fiscal - Teruel)
+[  OK  ] Subred 10.3.50.0/24 -> sitio Teruel  (VLAN 50 Administracion - Teruel)
+[  OK  ] Subred 10.3.60.0/24 -> sitio Teruel  (VLAN 60 Atencion - Teruel)
+[  OK  ] Subred 10.3.70.0/24 -> sitio Teruel  (VLAN 70 Impresoras - Teruel)
+[  OK  ] Subred 10.3.80.0/24 -> sitio Teruel  (VLAN 80 Invitados - Teruel)
+[  OK  ] Subred 10.0.0.0/24 -> sitio Zaragoza (túneles)
+
+========================================================================
+  4. ENLACES ENTRE SITIOS
+========================================================================
+[ INFO ] Coste 100 y replicación cada 15 minutos. Los enlaces salen de Zaragoza (estrella).
+[  OK  ] Enlace creado: Zaragoza-Huesca
+[  OK  ] Enlace creado: Zaragoza-Teruel
+[ INFO ] El enlace por defecto 'DEFAULTIPSITELINK' se deja como está (no estorba).
+
+========================================================================
+  5. UNIDADES ORGANIZATIVAS (OU)
+========================================================================
+[  OK  ] OU creada: OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Equipos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Servidores,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Grupos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Admin-TI,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Zaragoza,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Laboral,OU=Zaragoza,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Fiscal,OU=Zaragoza,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Administracion,OU=Zaragoza,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Atencion,OU=Zaragoza,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Zaragoza,OU=Equipos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Huesca,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Laboral,OU=Huesca,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Fiscal,OU=Huesca,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Administracion,OU=Huesca,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Atencion,OU=Huesca,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Huesca,OU=Equipos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Teruel,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Laboral,OU=Teruel,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Fiscal,OU=Teruel,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Administracion,OU=Teruel,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Atencion,OU=Teruel,OU=Usuarios,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Teruel,OU=Equipos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Globales,OU=Grupos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[  OK  ] OU creada: OU=Recursos,OU=Grupos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+
+========================================================================
+  6. UBICACIÓN POR DEFECTO DE LOS EQUIPOS NUEVOS
+========================================================================
+[  OK  ] Los equipos que se unan al dominio sin OU indicada irán a: OU=Zaragoza,OU=Equipos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+[ INFO ] Motivo: el contenedor "Computers" por defecto no admite GPO enlazadas.
+
+========================================================================
+  7. VERIFICACIÓN
+========================================================================
+
+Sitios:
+
+Name     Description
+----     -----------
+Huesca   Sede Huesca. Sin servidor propio (red en estrella, D30)
+Teruel   Sede Teruel. Sin servidor propio (red en estrella, D30)
+Zaragoza Sede principal. Nucleo: ubu-fw, DC y servidores
+
+
+Subredes por sitio:
+
+Name         Sitio    Location
+----         -----    --------
+10.2.30.0/24 Huesca   VLAN 30 Laboral - Huesca
+10.2.40.0/24 Huesca   VLAN 40 Fiscal - Huesca
+10.2.50.0/24 Huesca   VLAN 50 Administracion - Huesca
+10.2.60.0/24 Huesca   VLAN 60 Atencion - Huesca
+10.2.70.0/24 Huesca   VLAN 70 Impresoras - Huesca
+10.2.80.0/24 Huesca   VLAN 80 Invitados - Huesca
+10.3.30.0/24 Teruel   VLAN 30 Laboral - Teruel
+10.3.40.0/24 Teruel   VLAN 40 Fiscal - Teruel
+10.3.50.0/24 Teruel   VLAN 50 Administracion - Teruel
+10.3.60.0/24 Teruel   VLAN 60 Atencion - Teruel
+10.3.70.0/24 Teruel   VLAN 70 Impresoras - Teruel
+10.3.80.0/24 Teruel   VLAN 80 Invitados - Teruel
+10.0.0.0/24  Zaragoza Tuneles entre sedes (WireGuard) - terminan en ubu-fw
+10.1.10.0/24 Zaragoza VLAN 10 Gestion - Zaragoza
+10.1.20.0/24 Zaragoza VLAN 20 Servidores - Zaragoza
+10.1.30.0/24 Zaragoza VLAN 30 Laboral - Zaragoza
+10.1.40.0/24 Zaragoza VLAN 40 Fiscal - Zaragoza
+10.1.50.0/24 Zaragoza VLAN 50 Administracion - Zaragoza
+10.1.60.0/24 Zaragoza VLAN 60 Atencion - Zaragoza
+10.1.70.0/24 Zaragoza VLAN 70 Impresoras - Zaragoza
+10.1.80.0/24 Zaragoza VLAN 80 Invitados - Zaragoza
+10.1.90.0/24 Zaragoza VLAN 90 VPN usuarios - Zaragoza
+10.1.91.0/24 Zaragoza VLAN 91 VPN administradores - Zaragoza
+
+
+Enlaces entre sitios:
+
+Name              Cost ReplicationFrequencyInMinutes
+----              ---- -----------------------------
+DEFAULTIPSITELINK  100                           180
+Zaragoza-Huesca    100                            15
+Zaragoza-Teruel    100                            15
+
+
+Controlador y su sitio:
+
+Name Site     IPv4Address
+---- ----     -----------
+DC1  Zaragoza 10.1.20.10
+
+
+Árbol de OU:
+
+OU                                                        ProtectedFromAccidentalDeletion
+--                                                        -------------------------------
+OU=Administracion,OU=Huesca,OU=Usuarios,OU=GestionNorte                              True
+OU=Administracion,OU=Teruel,OU=Usuarios,OU=GestionNorte                              True
+OU=Administracion,OU=Zaragoza,OU=Usuarios,OU=GestionNorte                            True
+OU=Admin-TI,OU=GestionNorte                                                          True
+OU=Atencion,OU=Huesca,OU=Usuarios,OU=GestionNorte                                    True
+OU=Atencion,OU=Teruel,OU=Usuarios,OU=GestionNorte                                    True
+OU=Atencion,OU=Zaragoza,OU=Usuarios,OU=GestionNorte                                  True
+OU=Equipos,OU=GestionNorte                                                           True
+OU=Fiscal,OU=Huesca,OU=Usuarios,OU=GestionNorte                                      True
+OU=Fiscal,OU=Teruel,OU=Usuarios,OU=GestionNorte                                      True
+OU=Fiscal,OU=Zaragoza,OU=Usuarios,OU=GestionNorte                                    True
+OU=GestionNorte                                                                      True
+OU=Globales,OU=Grupos,OU=GestionNorte                                                True
+OU=Grupos,OU=GestionNorte                                                            True
+OU=Huesca,OU=Equipos,OU=GestionNorte                                                 True
+OU=Huesca,OU=Usuarios,OU=GestionNorte                                                True
+OU=Laboral,OU=Huesca,OU=Usuarios,OU=GestionNorte                                     True
+OU=Laboral,OU=Teruel,OU=Usuarios,OU=GestionNorte                                     True
+OU=Laboral,OU=Zaragoza,OU=Usuarios,OU=GestionNorte                                   True
+OU=Recursos,OU=Grupos,OU=GestionNorte                                                True
+OU=Servidores,OU=GestionNorte                                                        True
+OU=Teruel,OU=Equipos,OU=GestionNorte                                                 True
+OU=Teruel,OU=Usuarios,OU=GestionNorte                                                True
+OU=Usuarios,OU=GestionNorte                                                          True
+OU=Zaragoza,OU=Equipos,OU=GestionNorte                                               True
+OU=Zaragoza,OU=Usuarios,OU=GestionNorte                                              True
+
+
+[ INFO ] Total de OU: 26. Sin protección contra borrado: 0.
+
+[  OK  ] Script 04 finalizado. Log guardado en: C:\Evidencias\04-estructura-dc1-20261104-095226.log
+[ INFO ] SIGUIENTE PASO: script 05 (grupos AGDLP y usuarios desde CSV).
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20261104095231
+**********************
