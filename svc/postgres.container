@@ -1,0 +1,18 @@
+[Unit]
+Description=PostgreSQL 17 gestion_norte
+After=network-online.target
+
+[Container]
+ContainerName=postgres
+Image=docker.io/library/postgres:17
+Secret=pg_pass,type=env,target=POSTGRES_PASSWORD
+Environment=POSTGRES_USER=admin
+Environment=POSTGRES_DB=gestion_norte
+Volume=pgdata:/var/lib/postgresql/data
+PublishPort=127.0.0.1:5432:5432
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
