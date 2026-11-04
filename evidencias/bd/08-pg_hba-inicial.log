@@ -1,0 +1,21 @@
+ linea | tipo  |   database    | usuario |  address  |    metodo     
+-------+-------+---------------+---------+-----------+---------------
+   117 | local | {all}         | {all}   |           | trust
+   119 | host  | {all}         | {all}   | 127.0.0.1 | trust
+   121 | host  | {all}         | {all}   | ::1       | trust
+   124 | local | {replication} | {all}   |           | trust
+   125 | host  | {replication} | {all}   | 127.0.0.1 | trust
+   126 | host  | {replication} | {all}   | ::1       | trust
+   128 | host  | {all}         | {all}   | all       | scram-sha-256
+(7 rows)
+
+ password_encryption 
+---------------------
+ scram-sha-256
+(1 row)
+
+ ssl 
+-----
+ off
+(1 row)
+

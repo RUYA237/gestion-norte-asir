@@ -1,0 +1,15 @@
+         trigger_name          | event_object_table | action_timing | event_manipulation 
+-------------------------------+--------------------+---------------+--------------------
+ trg_auditar_cuenta_bancaria   | cuenta_bancaria    | AFTER         | INSERT
+ trg_auditar_cuenta_bancaria   | cuenta_bancaria    | AFTER         | DELETE
+ trg_auditar_cuenta_bancaria   | cuenta_bancaria    | AFTER         | UPDATE
+ trg_documento_conservar_hasta | documento          | BEFORE        | INSERT
+ trg_documento_conservar_hasta | documento          | BEFORE        | UPDATE
+(5 rows)
+
+            List of relations
+ Schema |      Name       | Type | Owner 
+--------+-----------------+------+-------
+ public | v_factura_total | view | admin
+(1 row)
+

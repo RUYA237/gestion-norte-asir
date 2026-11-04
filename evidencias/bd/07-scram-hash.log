@@ -1,0 +1,9 @@
+      rolname       |   tipo_hash    
+--------------------+----------------
+ usr_administracion | SCRAM-SHA-256$
+ usr_atencion       | SCRAM-SHA-256$
+ usr_auditoria      | SCRAM-SHA-256$
+ usr_fiscal         | SCRAM-SHA-256$
+ usr_laboral        | SCRAM-SHA-256$
+(5 rows)
+

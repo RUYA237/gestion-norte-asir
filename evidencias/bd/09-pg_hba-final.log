@@ -1,0 +1,9 @@
+ linea | tipo  |    database     |                                usuario                                 | address |    metodo     | error 
+-------+-------+-----------------+------------------------------------------------------------------------+---------+---------------+-------
+     2 | local | {all}           | {admin}                                                                |         | trust         | 
+     3 | local | {gestion_norte} | {+gn_laboral,+gn_fiscal,+gn_administracion,+gn_atencion,+gn_auditoria} |         | scram-sha-256 | 
+     4 | host  | {all}           | {admin}                                                                | all     | reject        | 
+     5 | host  | {gestion_norte} | {+gn_laboral,+gn_fiscal,+gn_administracion,+gn_atencion,+gn_auditoria} | all     | scram-sha-256 | 
+     6 | host  | {all}           | {all}                                                                  | all     | reject        | 
+(5 rows)
+

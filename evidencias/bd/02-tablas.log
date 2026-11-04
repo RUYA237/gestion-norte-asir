@@ -1,0 +1,22 @@
+             List of relations
+ Schema |       Name       | Type  | Owner 
+--------+------------------+-------+-------
+ public | auditoria_cambio | table | admin
+ public | cliente          | table | admin
+ public | consulta         | table | admin
+ public | contacto_cliente | table | admin
+ public | contratacion     | table | admin
+ public | cuenta_bancaria  | table | admin
+ public | departamento     | table | admin
+ public | documento        | table | admin
+ public | empleado         | table | admin
+ public | factura          | table | admin
+ public | linea_factura    | table | admin
+ public | nomina           | table | admin
+ public | obligacion       | table | admin
+ public | servicio         | table | admin
+ public | tipo_documento   | table | admin
+ public | tipo_obligacion  | table | admin
+ public | trabajador       | table | admin
+(17 rows)
+

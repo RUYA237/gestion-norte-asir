@@ -1,0 +1,21 @@
+      tabla       | filas 
+------------------+-------
+ auditoria_cambio |    23
+ cliente          |    20
+ consulta         |    24
+ contacto_cliente |    20
+ contratacion     |    47
+ cuenta_bancaria  |    23
+ departamento     |     4
+ documento        |    12
+ empleado         |    12
+ factura          |    22
+ linea_factura    |    22
+ nomina           |  2724
+ obligacion       |    19
+ servicio         |     6
+ tipo_documento   |     3
+ tipo_obligacion  |     5
+ trabajador       |    12
+(17 rows)
+

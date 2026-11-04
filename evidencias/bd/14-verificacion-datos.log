@@ -1,0 +1,79 @@
+Pager usage is off.
+== 1. Filas por tabla ==
+      tabla       | count 
+------------------+-------
+ departamento     |     4
+ empleado         |    12
+ servicio         |     6
+ tipo_documento   |     3
+ tipo_obligacion  |     5
+ cliente          |    20
+ contacto_cliente |    20
+ contratacion     |    47
+ trabajador       |    12
+ cuenta_bancaria  |    23
+ documento        |    12
+ nomina           |  2724
+ obligacion       |    19
+ factura          |    22
+ linea_factura    |    22
+ consulta         |    24
+ auditoria_cambio |    23
+(17 rows)
+
+== 2. Clientes por tipo y estado ==
+ tipo_cliente | clientes | dados_de_baja 
+--------------+----------+---------------
+ A            |        6 |             1
+ E            |       14 |             0
+(2 rows)
+
+== 3. Contratos por servicio ==
+ codigo |        nombre        | contratos 
+--------+----------------------+-----------
+ CON    | Contabilidad         |         7
+ FIS    | Asesoría fiscal      |        20
+ LAB    | Asesoría laboral     |        14
+ TRA    | Trámites y gestiones |         6
+(4 rows)
+
+== 4. Nóminas por tipo de paga y la columna liquido ==
+    tipo_paga    | nominas |   desde    |   hasta    
+-----------------+---------+------------+------------
+ EXTRA_DICIEMBRE |     192 | 2010-12-01 | 2025-12-01
+ EXTRA_JUNIO     |     192 | 2010-06-01 | 2025-06-01
+ ORDINARIA       |    2340 | 2010-01-01 | 2026-03-01
+(3 rows)
+
+ liquido_incorrecto 
+--------------------
+                  0
+(1 row)
+
+== 5. Facturas por estado de cobro y su total (vista) ==
+ estado_cobro | facturas | importe 
+--------------+----------+---------
+ COBRADA      |       12 | 3000.80
+ IMPAGADA     |        6 | 1815.00
+ PENDIENTE    |        4 | 1052.70
+(3 rows)
+
+== 6. Trigger de documento: conservar_hasta calculado ==
+ sin_conservar_hasta 
+---------------------
+                   0
+(1 row)
+
+ id_documento | fecha_documento | anios_conservacion | conservar_hasta 
+--------------+-----------------+--------------------+-----------------
+            1 | 2019-02-01      |                  5 | 2024-02-01
+            2 | 2020-03-01      |                  5 | 2025-03-01
+            3 | 2025-01-15      |                  5 | 2030-01-15
+(3 rows)
+
+== 7. Trigger de auditoría de cuenta_bancaria ==
+      tabla      | operacion | filas 
+-----------------+-----------+-------
+ cuenta_bancaria | I         |    23
+(1 row)
+

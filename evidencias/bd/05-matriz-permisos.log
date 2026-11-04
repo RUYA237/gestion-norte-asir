@@ -1,0 +1,22 @@
+      tabla       | laboral | fiscal | administracion | atencion | auditoria 
+------------------+---------+--------+----------------+----------+-----------
+ auditoria_cambio | ----    | ----   | -I--           | ----     | S---
+ cliente          | S---    | S---   | SIU-           | SIU-     | ----
+ consulta         | ----    | ----   | ----           | SIU-     | ----
+ contacto_cliente | ----    | ----   | ----           | SIU-     | ----
+ contratacion     | S---    | S---   | SIU-           | S---     | ----
+ cuenta_bancaria  | ----    | ----   | SIU-           | ----     | ----
+ departamento     | S---    | S---   | S---           | S---     | ----
+ documento        | SIU-    | SIU-   | ----           | ----     | ----
+ empleado         | S---    | S---   | S---           | S---     | ----
+ factura          | ----    | ----   | SIU-           | ----     | ----
+ linea_factura    | ----    | ----   | SIU-           | ----     | ----
+ nomina           | SIU-    | ----   | ----           | ----     | ----
+ obligacion       | ----    | SIU-   | ----           | ----     | ----
+ servicio         | S---    | S---   | S---           | S---     | ----
+ tipo_documento   | S---    | S---   | ----           | ----     | ----
+ tipo_obligacion  | ----    | S---   | ----           | ----     | ----
+ trabajador       | SIU-    | ----   | ----           | ----     | ----
+ v_factura_total  | ----    | ----   | S---           | ----     | ----
+(18 rows)
+

@@ -1,0 +1,26 @@
+== usr_atencion: SELECT cliente (permitido) ==
+ count 
+-------
+     0
+(1 row)
+
+== usr_atencion: SELECT nomina (denegado) ==
+ERROR:  permission denied for table nomina
+== usr_atencion: DELETE cliente (denegado) ==
+ERROR:  permission denied for table cliente
+== usr_laboral: SELECT nomina (permitido) ==
+ count 
+-------
+     0
+(1 row)
+
+== usr_laboral: SELECT cuenta_bancaria (denegado) ==
+ERROR:  permission denied for table cuenta_bancaria
+== usr_auditoria: SELECT auditoria_cambio (permitido) ==
+ count 
+-------
+     0
+(1 row)
+
+== usr_auditoria: INSERT auditoria_cambio (denegado) ==
+ERROR:  permission denied for table auditoria_cambio

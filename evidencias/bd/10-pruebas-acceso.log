@@ -1,0 +1,12 @@
+== 1. usr_laboral por socket, sin contraseña ==
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: fe_sendauth: no password supplied
+== 2. usr_laboral por red, contraseña incorrecta ==
+psql: error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "usr_laboral"
+== 3. admin por red ==
+psql: error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  pg_hba.conf rejects connection for host "127.0.0.1", user "admin", database "gestion_norte", no encryption
+== 4. admin por socket local ==
+ current_user 
+--------------
+ admin
+(1 row)
+
