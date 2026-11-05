@@ -1,8 +1,7 @@
-# Maqueta de la red de producción de Gestión Norte (containerlab).
-# Simula lo que VMware no puede: switches con VLAN 802.1Q, las tres sedes, los túneles
-# WireGuard y OSPF con la línea 4G de respaldo. Los servicios reales (Kea, Unbound,
-# Active Directory) siguen en el laboratorio de VMware.
-# Arranque: ver LEEME.md.
+# Maqueta de red de Gestión Norte (containerlab), versión 2.
+# Solo red: VLAN 802.1Q, dos núcleos con STP, accesos, tres sedes, un túnel WireGuard
+# por sede y OSPF. Sin 4G, sin firewall (las reglas de firewall van en Seguridad).
+# Direcciones: ver PLAN-DIRECCIONES.md.
 name: gestion-norte
 
 topology:
@@ -12,118 +11,158 @@ topology:
     cap-add: [NET_ADMIN]
 
   nodes:
-    # ---------------- Internet ----------------
+    # ---------- Internet (simulado) ----------
     inet:
-      sysctls:
-        net.ipv4.ip_forward: 1
       binds: [nodos/inet.sh:/config/arranque.sh:ro]
       exec: [bash /config/arranque.sh]
 
-    # ---------------- Zaragoza (CPD) ----------------
+    # ---------- Zaragoza (CPD) ----------
     ubu-fw:
-      sysctls:
-        net.ipv4.ip_forward: 1
-        net.ipv4.conf.all.rp_filter: 2
+      sysctls: {net.ipv4.ip_forward: 1}
       binds:
         - nodos/lib-router.sh:/config/lib-router.sh:ro
         - nodos/ubu-fw.sh:/config/arranque.sh:ro
         - frr/ubu-fw.conf:/etc/frr/frr.conf
         - frr/daemons:/etc/frr/daemons
-        - nft/ubu-fw.nft:/config/nftables.nft:ro
         - claves:/config/claves:ro
       exec: [bash /config/arranque.sh]
-    sw-zgz-core:
-      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-zgz-core.sh:/config/arranque.sh:ro]
+
+    zgz-n1:   # núcleo 1, raíz de STP
+      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-zgz-n1.sh:/config/arranque.sh:ro]
       exec: [bash /config/arranque.sh]
-    sw-zgz-acc1:
-      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-zgz-acc1.sh:/config/arranque.sh:ro]
+    zgz-n2:   # núcleo 2, respaldo
+      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-zgz-n2.sh:/config/arranque.sh:ro]
       exec: [bash /config/arranque.sh]
+    zgz-a1:   # acceso planta 1
+      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-zgz-a.sh:/config/arranque.sh:ro]
+      exec: [bash /config/arranque.sh zgz-a1]
+    zgz-a2:   # acceso planta 1
+      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-zgz-a.sh:/config/arranque.sh:ro]
+      exec: [bash /config/arranque.sh zgz-a2]
+    zgz-a3:   # acceso planta 2
+      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-zgz-a.sh:/config/arranque.sh:ro]
+      exec: [bash /config/arranque.sh zgz-a3]
+
     srv-dc1:
       exec:
         - ip addr add 10.1.20.10/24 dev eth1
-        - ip route replace default via 10.1.20.1 dev eth1
-        - bash -c "setsid nc -lk 445 >/dev/null 2>&1 < /dev/null &"
+        - ip route replace default via 10.1.20.1
     pc-it:
       exec:
         - ip addr add 10.1.10.10/24 dev eth1
-        - ip route replace default via 10.1.10.1 dev eth1
+        - ip route replace default via 10.1.10.1
     pc-lab-zgz:
       exec:
         - ip addr add 10.1.30.50/24 dev eth1
-        - ip route replace default via 10.1.30.1 dev eth1
+        - ip route replace default via 10.1.30.1
     pc-fis-zgz:
       exec:
         - ip addr add 10.1.40.50/24 dev eth1
-        - ip route replace default via 10.1.40.1 dev eth1
+        - ip route replace default via 10.1.40.1
+    pc-adm-zgz:
+      exec:
+        - ip addr add 10.1.50.50/24 dev eth1
+        - ip route replace default via 10.1.50.1
+    pc-atn-zgz:
+      exec:
+        - ip addr add 10.1.60.50/24 dev eth1
+        - ip route replace default via 10.1.60.1
+    prn-zgz:
+      exec:
+        - ip addr add 10.1.70.20/24 dev eth1
+        - ip route replace default via 10.1.70.1
+    pc-inv-zgz:
+      exec:
+        - ip addr add 10.1.80.50/24 dev eth1
+        - ip route replace default via 10.1.80.1
 
-    # ---------------- Huesca ----------------
+    # ---------- Huesca ----------
     rt-hue:
-      sysctls:
-        net.ipv4.ip_forward: 1
-        net.ipv4.conf.all.rp_filter: 2
+      sysctls: {net.ipv4.ip_forward: 1}
       binds:
         - nodos/lib-router.sh:/config/lib-router.sh:ro
         - nodos/rt-sede.sh:/config/arranque.sh:ro
         - frr/rt-hue.conf:/etc/frr/frr.conf
         - frr/daemons:/etc/frr/daemons
-        - nft/rt-sede.nft:/config/nftables.nft:ro
         - claves:/config/claves:ro
       exec: [bash /config/arranque.sh rt-hue 2]
-    sw-hue:
-      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-hue.sh:/config/arranque.sh:ro]
-      exec: [bash /config/arranque.sh]
+    sw-hue1:
+      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-sede.sh:/config/arranque.sh:ro]
+      exec: [bash /config/arranque.sh sw-hue1]
+    sw-hue2:
+      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-sede.sh:/config/arranque.sh:ro]
+      exec: [bash /config/arranque.sh sw-hue2]
     pc-lab-hue:
       exec:
         - ip addr add 10.2.30.50/24 dev eth1
-        - ip route replace default via 10.2.30.1 dev eth1
+        - ip route replace default via 10.2.30.1
     pc-fis-hue:
       exec:
         - ip addr add 10.2.40.50/24 dev eth1
-        - ip route replace default via 10.2.40.1 dev eth1
+        - ip route replace default via 10.2.40.1
     pc-inv-hue:
       exec:
         - ip addr add 10.2.80.50/24 dev eth1
-        - ip route replace default via 10.2.80.1 dev eth1
+        - ip route replace default via 10.2.80.1
 
-    # ---------------- Teruel ----------------
+    # ---------- Teruel ----------
     rt-ter:
-      sysctls:
-        net.ipv4.ip_forward: 1
-        net.ipv4.conf.all.rp_filter: 2
+      sysctls: {net.ipv4.ip_forward: 1}
       binds:
         - nodos/lib-router.sh:/config/lib-router.sh:ro
         - nodos/rt-sede.sh:/config/arranque.sh:ro
         - frr/rt-ter.conf:/etc/frr/frr.conf
         - frr/daemons:/etc/frr/daemons
-        - nft/rt-sede.nft:/config/nftables.nft:ro
         - claves:/config/claves:ro
       exec: [bash /config/arranque.sh rt-ter 3]
-    sw-ter:
-      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-ter.sh:/config/arranque.sh:ro]
-      exec: [bash /config/arranque.sh]
+    sw-ter1:
+      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-sede.sh:/config/arranque.sh:ro]
+      exec: [bash /config/arranque.sh sw-ter1]
+    sw-ter2:
+      binds: [nodos/lib-switch.sh:/config/lib-switch.sh:ro, nodos/sw-sede.sh:/config/arranque.sh:ro]
+      exec: [bash /config/arranque.sh sw-ter2]
     pc-fis-ter:
       exec:
         - ip addr add 10.3.40.50/24 dev eth1
-        - ip route replace default via 10.3.40.1 dev eth1
+        - ip route replace default via 10.3.40.1
+    pc-inv-ter:
+      exec:
+        - ip addr add 10.3.80.50/24 dev eth1
+        - ip route replace default via 10.3.80.1
 
   links:
-    # Zaragoza
-    - endpoints: ["ubu-fw:troncal", "sw-zgz-core:eth1"]
-    - endpoints: ["sw-zgz-core:eth2", "sw-zgz-acc1:eth1"]
-    - endpoints: ["sw-zgz-core:eth3", "srv-dc1:eth1"]
-    - endpoints: ["sw-zgz-core:eth4", "pc-it:eth1"]
-    - endpoints: ["sw-zgz-acc1:eth2", "pc-lab-zgz:eth1"]
-    - endpoints: ["sw-zgz-acc1:eth3", "pc-fis-zgz:eth1"]
-    # Salidas a Internet
-    - endpoints: ["ubu-fw:wan", "inet:eth1"]
-    - endpoints: ["ubu-fw:wan4g", "inet:eth2"]
-    - endpoints: ["rt-hue:wan", "inet:eth3"]
-    - endpoints: ["rt-ter:wan", "inet:eth4"]
+    # Internet
+    - endpoints: ["inet:eth1", "ubu-fw:wan"]
+    - endpoints: ["inet:eth2", "rt-hue:wan"]
+    - endpoints: ["inet:eth3", "rt-ter:wan"]
+
+    # Zaragoza: router, núcleos y accesos (cada acceso sube a los dos núcleos)
+    - endpoints: ["ubu-fw:eth1", "zgz-n1:eth1"]
+    - endpoints: ["zgz-n1:eth2", "zgz-n2:eth1"]
+    - endpoints: ["zgz-n1:eth3", "zgz-a1:eth1"]
+    - endpoints: ["zgz-n2:eth2", "zgz-a1:eth2"]
+    - endpoints: ["zgz-n1:eth4", "zgz-a2:eth1"]
+    - endpoints: ["zgz-n2:eth3", "zgz-a2:eth2"]
+    - endpoints: ["zgz-n1:eth5", "zgz-a3:eth1"]
+    - endpoints: ["zgz-n2:eth4", "zgz-a3:eth2"]
+    - endpoints: ["zgz-n1:eth6", "srv-dc1:eth1"]
+    - endpoints: ["zgz-a1:eth3", "pc-it:eth1"]
+    - endpoints: ["zgz-a1:eth4", "pc-lab-zgz:eth1"]
+    - endpoints: ["zgz-a2:eth3", "pc-fis-zgz:eth1"]
+    - endpoints: ["zgz-a2:eth4", "pc-adm-zgz:eth1"]
+    - endpoints: ["zgz-a3:eth3", "pc-atn-zgz:eth1"]
+    - endpoints: ["zgz-a3:eth4", "prn-zgz:eth1"]
+    - endpoints: ["zgz-a3:eth5", "pc-inv-zgz:eth1"]
+
     # Huesca
-    - endpoints: ["rt-hue:troncal", "sw-hue:eth1"]
-    - endpoints: ["sw-hue:eth2", "pc-lab-hue:eth1"]
-    - endpoints: ["sw-hue:eth3", "pc-fis-hue:eth1"]
-    - endpoints: ["sw-hue:eth4", "pc-inv-hue:eth1"]
+    - endpoints: ["rt-hue:eth1", "sw-hue1:eth1"]
+    - endpoints: ["sw-hue1:eth2", "pc-lab-hue:eth1"]
+    - endpoints: ["sw-hue1:eth3", "sw-hue2:eth1"]
+    - endpoints: ["sw-hue2:eth2", "pc-fis-hue:eth1"]
+    - endpoints: ["sw-hue2:eth3", "pc-inv-hue:eth1"]
+
     # Teruel
-    - endpoints: ["rt-ter:troncal", "sw-ter:eth1"]
-    - endpoints: ["sw-ter:eth2", "pc-fis-ter:eth1"]
+    - endpoints: ["rt-ter:eth1", "sw-ter1:eth1"]
+    - endpoints: ["sw-ter1:eth2", "pc-inv-ter:eth1"]
+    - endpoints: ["sw-ter1:eth3", "sw-ter2:eth1"]
+    - endpoints: ["sw-ter2:eth2", "pc-fis-ter:eth1"]
