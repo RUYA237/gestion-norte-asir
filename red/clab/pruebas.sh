@@ -22,22 +22,22 @@ p3() { t "P3 OSPF: vecinos y rutas aprendidas"
   x rt-hue vtysh -c "show ip route ospf"
   x ubu-fw wg show; }
 
-p4() { t "P4 Sedes: Huesca y Teruel llegan a los servidores por el túnel y nada más"
+p4() { t "P4 Sedes: Huesca y Teruel llegan a los servidores por el túnel (el bloqueo entre sedes requiere el firewall: pendiente)"
   x pc-lab-hue nc -zvw2 10.1.20.10 445
   x pc-fis-ter nc -zvw2 10.1.20.10 445
   x pc-lab-hue ping -c2 -W1 10.1.40.50
   x pc-lab-hue ping -c2 -W1 10.2.40.50
   x pc-it ping -c2 -W1 10.2.10.2; }
 
-p5() { t "P5 Internet: empresa por ubu-fw; invitados por la fibra local y aislados"
+p5() { t "P5 Internet: empresa por ubu-fw; invitados por la fibra local (el aislamiento de invitados requiere el firewall: pendiente)"
   x pc-lab-hue nc -zvw2 9.9.9.9 443
   x pc-lab-hue traceroute -n -T -p 443 -w1 -q1 9.9.9.9
   x pc-inv-hue nc -zvw2 9.9.9.9 443
   x pc-inv-hue traceroute -n -T -p 443 -w1 -q1 9.9.9.9
   x pc-inv-hue nc -zvw2 10.1.20.10 445
-  x rt-hue nft list chain inet filtro forward; }
+  }
 
-p6() { t "P6 Corte de la fibra de Zaragoza: OSPF pasa al 4G"
+p6() { t "P6 Corte de la fibra de Zaragoza: las sedes pierden la ruta a Zaragoza; sin respaldo (D38)"
   x rt-hue vtysh -c "show ip route 10.1.20.0/24"
   x pc-lab-hue traceroute -n -T -p 445 -w1 -q1 10.1.20.10
   echo ">>> Se corta la fibra (wan de ubu-fw) a las $(date +%T)"
