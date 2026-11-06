@@ -1,6 +1,4 @@
 #!/bin/bash
-# Pruebas de la maqueta. Uso: sudo ./pruebas.sh [número]   (sin número, todas)
-# Cada bloque es una captura para la memoria.
 L=clab-gestion-norte
 x() { local n=$1; shift; echo "\$ [$n] $*"; docker exec "$L-$n" "$@"; echo; }
 t() { echo; echo "=================== $* ==================="; }
