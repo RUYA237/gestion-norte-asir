@@ -178,3 +178,4 @@ Write-Ok "Script 09 finalizado. Log guardado en: $fichLog"
 Write-Info 'PENDIENTE DE VERIFICAR: en cli01 (gpupdate /force y Get-LapsADPassword) y la clave BitLocker en AD.'
 Stop-Transcript | Out-Null
 
+
