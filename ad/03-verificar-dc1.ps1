@@ -104,11 +104,19 @@ w32tm /query /status
 Write-Info 'dc1 es el PDC Emulator: es la referencia de hora del dominio. Los Ubuntu se sincronizan contra él.'
 
 Write-Titulo '8. DCDIAG'
-dcdiag /q
-if ($LASTEXITCODE -eq 0) { Write-Ok 'dcdiag /q no devuelve errores (silencio = todo correcto).' }
-else { Write-Aviso 'dcdiag ha devuelto avisos. Ejecuta "dcdiag /v" y documenta cada fallo y su solución.' }
+$salidaDcdiag = dcdiag /v /s:$env:COMPUTERNAME 2>&1
+$fichDcdiag = Join-Path (Split-Path $fichLog) "dcdiag-v-$(Get-Date -Format 'yyyyMMdd-HHmmss').txt"
+$salidaDcdiag | Out-File -FilePath $fichDcdiag -Encoding utf8
+Write-Info "Salida completa de dcdiag guardada en: $fichDcdiag"
+$fallos = $salidaDcdiag | Select-String -Pattern 'no superó|fallad|failed'
+if ($fallos) {
+    Write-Aviso "dcdiag muestra $($fallos.Count) línea(s) con fallos. Revisa $fichDcdiag, documenta cada fallo y su solución."
+    $fallos | ForEach-Object { Write-Aviso $_.Line.Trim() }
+}
+else {
+    Write-Ok 'dcdiag /v no muestra pruebas fallidas en su salida.'
+}
 
 Write-Host ''
 Write-Ok "Script 03 finalizado. Log guardado en: $fichLog"
-Write-Info 'SIGUIENTE PASO: avisar a Raúl (reenvío de zona en Unbound) y ejecutar los scripts 04 y 05.'
 Stop-Transcript | Out-Null
