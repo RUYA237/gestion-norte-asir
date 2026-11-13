@@ -1,0 +1,290 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20261104104651
+Nombre de usuario: GESTIONNORTE\Administrador
+Usuario RunAs: GESTIONNORTE\Administrador
+Nombre de la configuración: 
+Máquina: DC1 (Microsoft Windows NT 10.0.26100.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Id. de proceso: 7928
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+========================================================================
+  SCRIPT 05 - GRUPOS AGDLP Y USUARIOS DESDE CSV
+========================================================================
+[ INFO ] Ejecutado por : GESTIONNORTE\Administrador
+[ INFO ] Fecha y hora  : 04/11/2026 10:46:51
+[ INFO ] CSV           : C:\Scripts\usuarios.csv
+[ INFO ] Log           : C:\Evidencias\05-usuarios-dc1-20261104-104650.log
+
+========================================================================
+  1. PRECONDICIONES
+========================================================================
+[  OK  ] Controlador de dominio. Dominio: DC=ad,DC=gestionnorte,DC=es
+[  OK  ] Las OU de usuarios y grupos existen (script 04).
+
+========================================================================
+  2. VALIDACIÓN DEL CSV
+========================================================================
+[  OK  ] CSV válido: 150 usuarios.
+[ INFO ] Recuento por sede:
+[ INFO ]   Huesca: 25
+[ INFO ]   Teruel: 15
+[ INFO ]   Zaragoza: 110
+[ INFO ] Recuento por departamento:
+[ INFO ]   Administracion: 25
+[ INFO ]   Atencion: 20
+[ INFO ]   Fiscal: 45
+[ INFO ]   Laboral: 60
+
+========================================================================
+  3. GRUPOS GLOBALES (GG_)
+========================================================================
+[  OK  ] Grupo creado: GG_Zaragoza_Laboral (Global)
+[  OK  ] Grupo creado: GG_Zaragoza_Fiscal (Global)
+[  OK  ] Grupo creado: GG_Zaragoza_Administracion (Global)
+[  OK  ] Grupo creado: GG_Zaragoza_Atencion (Global)
+[  OK  ] Grupo creado: GG_Huesca_Laboral (Global)
+[  OK  ] Grupo creado: GG_Huesca_Fiscal (Global)
+[  OK  ] Grupo creado: GG_Huesca_Administracion (Global)
+[  OK  ] Grupo creado: GG_Huesca_Atencion (Global)
+[  OK  ] Grupo creado: GG_Teruel_Laboral (Global)
+[  OK  ] Grupo creado: GG_Teruel_Fiscal (Global)
+[  OK  ] Grupo creado: GG_Teruel_Administracion (Global)
+[  OK  ] Grupo creado: GG_Teruel_Atencion (Global)
+
+========================================================================
+  4. GRUPOS LOCALES DE DOMINIO (DL_) Y ANIDACIÓN
+========================================================================
+[ INFO ] Cadena: usuario -> GG_ (global) -> DL_ (local de dominio) -> permiso en la carpeta.
+[  OK  ] Grupo creado: DL_Fichero_Laboral_RW (DomainLocal)
+[  OK  ] Grupo creado: DL_Fichero_Laboral_RO (DomainLocal)
+[  OK  ] GG_Zaragoza_Laboral añadido a DL_Fichero_Laboral_RW
+[  OK  ] GG_Huesca_Laboral añadido a DL_Fichero_Laboral_RW
+[  OK  ] GG_Teruel_Laboral añadido a DL_Fichero_Laboral_RW
+[  OK  ] Grupo creado: DL_Fichero_Fiscal_RW (DomainLocal)
+[  OK  ] Grupo creado: DL_Fichero_Fiscal_RO (DomainLocal)
+[  OK  ] GG_Zaragoza_Fiscal añadido a DL_Fichero_Fiscal_RW
+[  OK  ] GG_Huesca_Fiscal añadido a DL_Fichero_Fiscal_RW
+[  OK  ] GG_Teruel_Fiscal añadido a DL_Fichero_Fiscal_RW
+[  OK  ] Grupo creado: DL_Fichero_Administracion_RW (DomainLocal)
+[  OK  ] Grupo creado: DL_Fichero_Administracion_RO (DomainLocal)
+[  OK  ] GG_Zaragoza_Administracion añadido a DL_Fichero_Administracion_RW
+[  OK  ] GG_Huesca_Administracion añadido a DL_Fichero_Administracion_RW
+[  OK  ] GG_Teruel_Administracion añadido a DL_Fichero_Administracion_RW
+[  OK  ] Grupo creado: DL_Fichero_Atencion_RW (DomainLocal)
+[  OK  ] Grupo creado: DL_Fichero_Atencion_RO (DomainLocal)
+[  OK  ] GG_Zaragoza_Atencion añadido a DL_Fichero_Atencion_RW
+[  OK  ] GG_Huesca_Atencion añadido a DL_Fichero_Atencion_RW
+[  OK  ] GG_Teruel_Atencion añadido a DL_Fichero_Atencion_RW
+
+========================================================================
+  5. USUARIOS
+========================================================================
+[  OK  ] Carpeta de contraseñas creada con permisos restringidos: C:\Seguro
+[  OK  ] Usuario creado: daniel.ortega (Zaragoza / Laboral)
+[  OK  ] Usuario creado: monica.velasco (Zaragoza / Laboral)
+[  OK  ] Usuario creado: alicia.caballero (Zaragoza / Laboral)
+[  OK  ] Usuario creado: ruben.lozano (Zaragoza / Laboral)
+[  OK  ] Usuario creado: ignacio.leon (Zaragoza / Laboral)
+[  OK  ] Usuario creado: sonia.martinez (Zaragoza / Laboral)
+[  OK  ] Usuario creado: pilar.molina (Zaragoza / Laboral)
+[  OK  ] Usuario creado: javier.alonso (Zaragoza / Laboral)
+[  OK  ] Usuario creado: alberto.garcia (Zaragoza / Laboral)
+[  OK  ] Usuario creado: ana.molina (Zaragoza / Laboral)
+[  OK  ] Usuario creado: roberto.crespo (Zaragoza / Laboral)
+[  OK  ] Usuario creado: carmen.ruiz (Zaragoza / Laboral)
+[  OK  ] Usuario creado: ruben.fernandez (Zaragoza / Laboral)
+[  OK  ] Usuario creado: rosa.lopez (Zaragoza / Laboral)
+[  OK  ] Usuario creado: andres.pastor (Zaragoza / Laboral)
+[  OK  ] Usuario creado: ignacio.molina (Zaragoza / Laboral)
+[  OK  ] Usuario creado: veronica.ramos (Zaragoza / Laboral)
+[  OK  ] Usuario creado: cristina.cano (Zaragoza / Laboral)
+[  OK  ] Usuario creado: tomas.vicente (Zaragoza / Laboral)
+[  OK  ] Usuario creado: luis.diez (Zaragoza / Laboral)
+[  OK  ] Usuario creado: gonzalo.rojas (Zaragoza / Laboral)
+[  OK  ] Usuario creado: daniel.parra (Zaragoza / Laboral)
+[  OK  ] Usuario creado: natalia.velasco (Zaragoza / Laboral)
+[  OK  ] Usuario creado: daniel.garrido (Zaragoza / Laboral)
+[  OK  ] Usuario creado: hector.pastor (Zaragoza / Laboral)
+[  OK  ] Usuario creado: gonzalo.duran (Zaragoza / Laboral)
+[  OK  ] Usuario creado: maria.parra (Zaragoza / Laboral)
+[  OK  ] Usuario creado: rosa.marin (Zaragoza / Laboral)
+[  OK  ] Usuario creado: david.santos (Zaragoza / Laboral)
+[  OK  ] Usuario creado: paula.montero (Zaragoza / Laboral)
+[  OK  ] Usuario creado: ines.lorenzo (Zaragoza / Laboral)
+[  OK  ] Usuario creado: elena.pastor (Zaragoza / Laboral)
+[  OK  ] Usuario creado: pilar.alvarez (Zaragoza / Laboral)
+[  OK  ] Usuario creado: hector.herrera (Zaragoza / Laboral)
+[  OK  ] Usuario creado: monica.carmona (Zaragoza / Laboral)
+[  OK  ] Usuario creado: marta.ortega (Zaragoza / Laboral)
+[  OK  ] Usuario creado: samuel.navarro (Zaragoza / Laboral)
+[  OK  ] Usuario creado: ines.santana (Zaragoza / Laboral)
+[  OK  ] Usuario creado: victor.cruz (Zaragoza / Laboral)
+[  OK  ] Usuario creado: victor.rubio (Zaragoza / Laboral)
+[  OK  ] Usuario creado: miguel.iglesias (Zaragoza / Laboral)
+[  OK  ] Usuario creado: marta.soto (Zaragoza / Laboral)
+[  OK  ] Usuario creado: julia.soler (Zaragoza / Laboral)
+[  OK  ] Usuario creado: gonzalo.nunez (Zaragoza / Laboral)
+[  OK  ] Usuario creado: marcos.bravo (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: diego.serrano (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: jorge.herrero (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: raquel.alvarez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: patricia.herrero (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: oscar.fernandez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: lucia.gimenez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: monica.garrido (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: javier.diaz (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: manuel.fernandez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: claudia.domingue (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: roberto.lorenzo (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: jorge.duran (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: maria.dominguez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: eva.diaz (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: sergio.sanz (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: david.perez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: alejandro.lorenz (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: lorena.santos (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: monica.herrera (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: david.ferrer (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: raquel.cabrera (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: lorena.dominguez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: diego.martinez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: miguel.sanz (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: maria.sanchez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: lorena.garcia (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: javier.fernandez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: laura.gimenez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: paula.moya (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: alejandro.castil (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: samuel.marquez (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: sergio.campos (Zaragoza / Fiscal)
+[  OK  ] Usuario creado: ana.rubio (Zaragoza / Administracion)
+[  OK  ] Usuario creado: javier.ibanez (Zaragoza / Administracion)
+[  OK  ] Usuario creado: raquel.mendez (Zaragoza / Administracion)
+[  OK  ] Usuario creado: eva.caballero (Zaragoza / Administracion)
+[  OK  ] Usuario creado: beatriz.garrido (Zaragoza / Administracion)
+[  OK  ] Usuario creado: jorge.rubio (Zaragoza / Administracion)
+[  OK  ] Usuario creado: raul.garrido (Zaragoza / Administracion)
+[  OK  ] Usuario creado: diego.vargas (Zaragoza / Administracion)
+[  OK  ] Usuario creado: luis.fernandez (Zaragoza / Administracion)
+[  OK  ] Usuario creado: ivan.garrido (Zaragoza / Administracion)
+[  OK  ] Usuario creado: enrique.santana (Zaragoza / Administracion)
+[  OK  ] Usuario creado: irene.campos (Zaragoza / Administracion)
+[  OK  ] Usuario creado: isabel.ferrer (Zaragoza / Administracion)
+[  OK  ] Usuario creado: raul.carrasco (Zaragoza / Administracion)
+[  OK  ] Usuario creado: pablo.santos (Zaragoza / Administracion)
+[  OK  ] Usuario creado: eva.nunez (Zaragoza / Administracion)
+[  OK  ] Usuario creado: gonzalo.campos (Zaragoza / Administracion)
+[  OK  ] Usuario creado: raquel.rojas (Zaragoza / Administracion)
+[  OK  ] Usuario creado: silvia.cortes (Zaragoza / Atencion)
+[  OK  ] Usuario creado: diego.martinez2 (Zaragoza / Atencion)
+[  OK  ] Usuario creado: ana.vega (Zaragoza / Atencion)
+[  OK  ] Usuario creado: patricia.garrido (Zaragoza / Atencion)
+[  OK  ] Usuario creado: teresa.vazquez (Zaragoza / Atencion)
+[  OK  ] Usuario creado: rosa.munoz (Zaragoza / Atencion)
+[  OK  ] Usuario creado: miguel.pastor (Zaragoza / Atencion)
+[  OK  ] Usuario creado: hector.torres (Zaragoza / Atencion)
+[  OK  ] Usuario creado: isabel.serrano (Zaragoza / Atencion)
+[  OK  ] Usuario creado: natalia.martinez (Zaragoza / Atencion)
+[  OK  ] Usuario creado: paula.castro (Zaragoza / Atencion)
+[  OK  ] Usuario creado: elena.ruiz (Zaragoza / Atencion)
+[  OK  ] Usuario creado: beatriz.herrero (Zaragoza / Atencion)
+[  OK  ] Usuario creado: ivan.serrano (Zaragoza / Atencion)
+[  OK  ] Usuario creado: raquel.herrero (Zaragoza / Atencion)
+[  OK  ] Usuario creado: sara.santana (Huesca / Laboral)
+[  OK  ] Usuario creado: manuel.reyes (Huesca / Laboral)
+[  OK  ] Usuario creado: diego.serrano2 (Huesca / Laboral)
+[  OK  ] Usuario creado: pilar.ferrer (Huesca / Laboral)
+[  OK  ] Usuario creado: marta.prieto (Huesca / Laboral)
+[  OK  ] Usuario creado: lorena.duran (Huesca / Laboral)
+[  OK  ] Usuario creado: laura.caballero (Huesca / Laboral)
+[  OK  ] Usuario creado: diego.cabrera (Huesca / Laboral)
+[  OK  ] Usuario creado: miguel.vidal (Huesca / Laboral)
+[  OK  ] Usuario creado: julia.garrido (Huesca / Laboral)
+[  OK  ] Usuario creado: alberto.leon (Huesca / Fiscal)
+[  OK  ] Usuario creado: roberto.martinez (Huesca / Fiscal)
+[  OK  ] Usuario creado: alicia.diaz (Huesca / Fiscal)
+[  OK  ] Usuario creado: sonia.vicente (Huesca / Fiscal)
+[  OK  ] Usuario creado: sonia.crespo (Huesca / Fiscal)
+[  OK  ] Usuario creado: natalia.sanz (Huesca / Fiscal)
+[  OK  ] Usuario creado: veronica.medina (Huesca / Fiscal)
+[  OK  ] Usuario creado: ignacio.roman (Huesca / Fiscal)
+[  OK  ] Usuario creado: hector.alvarez (Huesca / Administracion)
+[  OK  ] Usuario creado: lorena.calvo (Huesca / Administracion)
+[  OK  ] Usuario creado: carlos.parra (Huesca / Administracion)
+[  OK  ] Usuario creado: samuel.marin (Huesca / Administracion)
+[  OK  ] Usuario creado: ignacio.prieto (Huesca / Atencion)
+[  OK  ] Usuario creado: alberto.carmona (Huesca / Atencion)
+[  OK  ] Usuario creado: ana.diaz (Huesca / Atencion)
+[  OK  ] Usuario creado: sonia.bravo (Teruel / Laboral)
+[  OK  ] Usuario creado: maria.prieto (Teruel / Laboral)
+[  OK  ] Usuario creado: lorena.saez (Teruel / Laboral)
+[  OK  ] Usuario creado: paula.ruiz (Teruel / Laboral)
+[  OK  ] Usuario creado: elena.prieto (Teruel / Laboral)
+[  OK  ] Usuario creado: luis.arias (Teruel / Laboral)
+[  OK  ] Usuario creado: andres.caballero (Teruel / Fiscal)
+[  OK  ] Usuario creado: irene.campos2 (Teruel / Fiscal)
+[  OK  ] Usuario creado: marta.santos (Teruel / Fiscal)
+[  OK  ] Usuario creado: ignacio.leon2 (Teruel / Fiscal)
+[  OK  ] Usuario creado: luis.calvo (Teruel / Administracion)
+[  OK  ] Usuario creado: victor.herrera (Teruel / Administracion)
+[  OK  ] Usuario creado: sonia.carmona (Teruel / Administracion)
+[  OK  ] Usuario creado: patricia.herrera (Teruel / Atencion)
+[  OK  ] Usuario creado: oscar.ibanez (Teruel / Atencion)
+[AVISO ] Contraseñas iniciales guardadas en: C:\Seguro\contrasenas-iniciales-20261104-104650.csv
+[AVISO ] NO las copies a Git, a evidencias ni a capturas. Entrégalas y borra el fichero.
+[ INFO ] Resumen de usuarios: creados 150, omitidos (ya existían) 0, errores 0.
+
+========================================================================
+  6. VERIFICACIÓN
+========================================================================
+[  OK  ] Usuarios en AD bajo OU=Usuarios: 150 (coincide con el CSV).
+
+Grupos globales GG_ y miembros:
+
+Grupo                      Miembros
+-----                      --------
+GG_Huesca_Administracion          4
+GG_Huesca_Atencion                3
+GG_Huesca_Fiscal                  8
+GG_Huesca_Laboral                10
+GG_Teruel_Administracion          3
+GG_Teruel_Atencion                2
+GG_Teruel_Fiscal                  4
+GG_Teruel_Laboral                 6
+GG_Zaragoza_Administracion       18
+GG_Zaragoza_Atencion             15
+GG_Zaragoza_Fiscal               33
+GG_Zaragoza_Laboral              44
+
+
+Grupos locales de dominio DL_ y miembros:
+
+Grupo                        Miembros
+-----                        --------
+DL_Fichero_Administracion_RO
+DL_Fichero_Administracion_RW GG_Teruel_Administracion, GG_Huesca_Administracion, GG_Zaragoza_Administracion
+DL_Fichero_Atencion_RO
+DL_Fichero_Atencion_RW       GG_Teruel_Atencion, GG_Huesca_Atencion, GG_Zaragoza_Atencion
+DL_Fichero_Fiscal_RO
+DL_Fichero_Fiscal_RW         GG_Teruel_Fiscal, GG_Huesca_Fiscal, GG_Zaragoza_Fiscal
+DL_Fichero_Laboral_RO
+DL_Fichero_Laboral_RW        GG_Teruel_Laboral, GG_Huesca_Laboral, GG_Zaragoza_Laboral
+
+
+
+[  OK  ] Script 05 finalizado sin errores. Log guardado en: C:\Evidencias\05-usuarios-dc1-20261104-104650.log
+[ INFO ] SIGUIENTE PASO: capturas 15 (grupos) y 16 (usuarios). Después, commit del 05 y script de GPO.
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20261104104738
+**********************

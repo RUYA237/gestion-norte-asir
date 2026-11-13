@@ -1,0 +1,226 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20261104132007
+Nombre de usuario: GESTIONNORTE\Administrador
+Usuario RunAs: GESTIONNORTE\Administrador
+Nombre de la configuración: 
+Máquina: DC1 (Microsoft Windows NT 10.0.26100.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Id. de proceso: 5316
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+========================================================================
+  SCRIPT 10 - GPO DE WINDOWS UPDATE
+========================================================================
+[ INFO ] Ejecutado por : GESTIONNORTE\Administrador
+[ INFO ] Fecha y hora  : 04/11/2026 13:20:07
+[ INFO ] Log           : C:\Evidencias\10-gpo-wu-dc1-20261104-132007.log
+
+========================================================================
+  1. PRECONDICIONES
+========================================================================
+[  OK  ] Existen las OU de equipos y servidores (script 04).
+
+========================================================================
+  2. GPO Y ENLACES
+========================================================================
+[ INFO ] Ya existe la GPO GN-Equipos-WindowsUpdate. Se actualizan sus valores.
+[ INFO ] La GPO ya está enlazada a OU=Equipos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es.
+[ INFO ] La GPO ya está enlazada a OU=Servidores,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es.
+
+========================================================================
+  3. AJUSTES DE LA GPO
+========================================================================
+
+
+DisplayName      : GN-Equipos-WindowsUpdate
+DomainName       : ad.gestionnorte.es
+Owner            : GESTIONNORTE\Admins. del dominio
+Id               : 67656055-b8d8-47c5-a4ff-e0e288c72be0
+GpoStatus        : AllSettingsEnabled
+Description      : Windows Update: instalación nocturna, horas activas y aplazamiento de 7 días (script 10)
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:08
+UserVersion      : Versión de AD: 0; versión del volumen del sistema: 0
+ComputerVersion  : Versión de AD: 11; versión del volumen del sistema: 11
+WmiFilter        :
+
+DisplayName      : GN-Equipos-WindowsUpdate
+DomainName       : ad.gestionnorte.es
+Owner            : GESTIONNORTE\Admins. del dominio
+Id               : 67656055-b8d8-47c5-a4ff-e0e288c72be0
+GpoStatus        : AllSettingsEnabled
+Description      : Windows Update: instalación nocturna, horas activas y aplazamiento de 7 días (script 10)
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:10
+UserVersion      : Versión de AD: 0; versión del volumen del sistema: 0
+ComputerVersion  : Versión de AD: 12; versión del volumen del sistema: 12
+WmiFilter        :
+
+DisplayName      : GN-Equipos-WindowsUpdate
+DomainName       : ad.gestionnorte.es
+Owner            : GESTIONNORTE\Admins. del dominio
+Id               : 67656055-b8d8-47c5-a4ff-e0e288c72be0
+GpoStatus        : AllSettingsEnabled
+Description      : Windows Update: instalación nocturna, horas activas y aplazamiento de 7 días (script 10)
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:10
+UserVersion      : Versión de AD: 0; versión del volumen del sistema: 0
+ComputerVersion  : Versión de AD: 13; versión del volumen del sistema: 13
+WmiFilter        :
+
+DisplayName      : GN-Equipos-WindowsUpdate
+DomainName       : ad.gestionnorte.es
+Owner            : GESTIONNORTE\Admins. del dominio
+Id               : 67656055-b8d8-47c5-a4ff-e0e288c72be0
+GpoStatus        : AllSettingsEnabled
+Description      : Windows Update: instalación nocturna, horas activas y aplazamiento de 7 días (script 10)
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:10
+UserVersion      : Versión de AD: 0; versión del volumen del sistema: 0
+ComputerVersion  : Versión de AD: 14; versión del volumen del sistema: 14
+WmiFilter        :
+
+[  OK  ] Instalación automática: todos los días a las 03:00.
+DisplayName      : GN-Equipos-WindowsUpdate
+DomainName       : ad.gestionnorte.es
+Owner            : GESTIONNORTE\Admins. del dominio
+Id               : 67656055-b8d8-47c5-a4ff-e0e288c72be0
+GpoStatus        : AllSettingsEnabled
+Description      : Windows Update: instalación nocturna, horas activas y aplazamiento de 7 días (script 10)
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:10
+UserVersion      : Versión de AD: 0; versión del volumen del sistema: 0
+ComputerVersion  : Versión de AD: 15; versión del volumen del sistema: 15
+WmiFilter        :
+
+DisplayName      : GN-Equipos-WindowsUpdate
+DomainName       : ad.gestionnorte.es
+Owner            : GESTIONNORTE\Admins. del dominio
+Id               : 67656055-b8d8-47c5-a4ff-e0e288c72be0
+GpoStatus        : AllSettingsEnabled
+Description      : Windows Update: instalación nocturna, horas activas y aplazamiento de 7 días (script 10)
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:10
+UserVersion      : Versión de AD: 0; versión del volumen del sistema: 0
+ComputerVersion  : Versión de AD: 16; versión del volumen del sistema: 16
+WmiFilter        :
+
+DisplayName      : GN-Equipos-WindowsUpdate
+DomainName       : ad.gestionnorte.es
+Owner            : GESTIONNORTE\Admins. del dominio
+Id               : 67656055-b8d8-47c5-a4ff-e0e288c72be0
+GpoStatus        : AllSettingsEnabled
+Description      : Windows Update: instalación nocturna, horas activas y aplazamiento de 7 días (script 10)
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:10
+UserVersion      : Versión de AD: 0; versión del volumen del sistema: 0
+ComputerVersion  : Versión de AD: 17; versión del volumen del sistema: 17
+WmiFilter        :
+
+DisplayName      : GN-Equipos-WindowsUpdate
+DomainName       : ad.gestionnorte.es
+Owner            : GESTIONNORTE\Admins. del dominio
+Id               : 67656055-b8d8-47c5-a4ff-e0e288c72be0
+GpoStatus        : AllSettingsEnabled
+Description      : Windows Update: instalación nocturna, horas activas y aplazamiento de 7 días (script 10)
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:10
+UserVersion      : Versión de AD: 0; versión del volumen del sistema: 0
+ComputerVersion  : Versión de AD: 18; versión del volumen del sistema: 18
+WmiFilter        :
+
+[  OK  ] Horas activas 08:00-20:00 y sin reinicio automático con usuarios conectados.
+DisplayName      : GN-Equipos-WindowsUpdate
+DomainName       : ad.gestionnorte.es
+Owner            : GESTIONNORTE\Admins. del dominio
+Id               : 67656055-b8d8-47c5-a4ff-e0e288c72be0
+GpoStatus        : AllSettingsEnabled
+Description      : Windows Update: instalación nocturna, horas activas y aplazamiento de 7 días (script 10)
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:10
+UserVersion      : Versión de AD: 0; versión del volumen del sistema: 0
+ComputerVersion  : Versión de AD: 19; versión del volumen del sistema: 19
+WmiFilter        :
+
+DisplayName      : GN-Equipos-WindowsUpdate
+DomainName       : ad.gestionnorte.es
+Owner            : GESTIONNORTE\Admins. del dominio
+Id               : 67656055-b8d8-47c5-a4ff-e0e288c72be0
+GpoStatus        : AllSettingsEnabled
+Description      : Windows Update: instalación nocturna, horas activas y aplazamiento de 7 días (script 10)
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:10
+UserVersion      : Versión de AD: 0; versión del volumen del sistema: 0
+ComputerVersion  : Versión de AD: 20; versión del volumen del sistema: 20
+WmiFilter        :
+
+[  OK  ] Actualizaciones de calidad aplazadas 7 días (margen para probar).
+
+========================================================================
+  4. VERIFICACIÓN
+========================================================================
+GPO:
+
+
+
+
+DisplayName      : GN-Equipos-WindowsUpdate
+GpoStatus        : AllSettingsEnabled
+CreationTime     : 04/11/2026 13:00:45
+ModificationTime : 04/11/2026 13:20:10
+
+
+
+Enlaces:
+  OU=Equipos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+
+DisplayName              Enabled Enforced
+-----------              ------- --------
+GN-Equipos-WindowsUpdate    True    False
+
+
+  OU=Servidores,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+
+DisplayName              Enabled Enforced
+-----------              ------- --------
+GN-Equipos-WindowsUpdate    True    False
+
+
+Valores configurados (WindowsUpdate):
+
+ValueName                       Value
+---------                       -----
+SetActiveHours                      1
+ActiveHoursStart                    8
+ActiveHoursEnd                     20
+DeferQualityUpdates                 1
+DeferQualityUpdatesPeriodInDays     7
+
+
+Valores configurados (WindowsUpdate\AU):
+
+ValueName                     Value
+---------                     -----
+NoAutoUpdate                      0
+AUOptions                         4
+ScheduledInstallDay               0
+ScheduledInstallTime              3
+NoAutoRebootWithLoggedOnUsers     1
+
+
+
+[  OK  ] Script 10 finalizado. Log guardado en: C:\Evidencias\10-gpo-wu-dc1-20261104-132007.log
+[ INFO ] PENDIENTE DE VERIFICAR: en cli01 (gpresult /r y claves del registro de Windows Update).
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20261104132012
+**********************

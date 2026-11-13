@@ -1,0 +1,120 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20261104125136
+Nombre de usuario: GESTIONNORTE\Administrador
+Usuario RunAs: GESTIONNORTE\Administrador
+Nombre de la configuración: 
+Máquina: DC1 (Microsoft Windows NT 10.0.26100.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Id. de proceso: 4416
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+========================================================================
+  SCRIPT 09 - GPO DE EQUIPOS (LAPS Y BITLOCKER)
+========================================================================
+[ INFO ] Ejecutado por : GESTIONNORTE\Administrador
+[ INFO ] Fecha y hora  : 04/11/2026 12:51:37
+[ INFO ] Log           : C:\Evidencias\09-gpo-equipos-dc1-20261104-125136.log
+
+========================================================================
+  1. PRECONDICIONES
+========================================================================
+[  OK  ] Dominio ad.gestionnorte.es.
+[  OK  ] Existe la OU de equipos (script 04).
+
+========================================================================
+  2. WINDOWS LAPS: ESQUEMA Y PERMISOS
+========================================================================
+[ INFO ] Windows LAPS viene integrado en Windows Server 2025. No se instala nada.
+[  OK  ] Esquema de AD ampliado para Windows LAPS (o ya estaba).
+
+[  OK  ] Los equipos de OU=Equipos pueden escribir su propia contraseña LAPS.
+
+========================================================================
+  3. GPO Y ENLACE
+========================================================================
+[  OK  ] GPO creada: GN-Equipos-Seguridad
+[  OK  ] GPO enlazada a OU=Equipos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es.
+
+========================================================================
+  4. AJUSTES DE LA GPO
+========================================================================
+Name    DistinguishedName
+----    -----------------
+Equipos OU=Equipos,OU=GestionNorte,DC=ad,DC=gestionnorte,DC=es
+
+
+
+
+
+
+[  OK  ] LAPS: contraseña de 20 caracteres, rotación cada 30 días, guardada en AD.
+
+
+
+
+
+[  OK  ] BitLocker: la clave de recuperación se guarda en AD antes de cifrar.
+[AVISO ] Pendiente de verificar en gpedit (Cifrado de unidad BitLocker) que los valores se ven como "Habilitada".
+
+========================================================================
+  5. VERIFICACIÓN
+========================================================================
+GPO y enlaces:
+
+
+
+
+DisplayName      : GN-Equipos-Seguridad
+GpoStatus        : AllSettingsEnabled
+CreationTime     : 04/11/2026 12:51:42
+ModificationTime : 04/11/2026 12:51:44
+
+
+
+
+DisplayName          Enabled Enforced
+-----------          ------- --------
+GN-Equipos-Seguridad    True    False
+
+
+Valores LAPS:
+
+ValueName                    Value
+---------                    -----
+BackupDirectory                  2
+PasswordLength                  20
+PasswordAgeDays                 30
+PasswordComplexity               4
+PostAuthenticationActions        3
+PostAuthenticationResetDelay     8
+
+
+Valores BitLocker:
+
+ValueName                      Value
+---------                      -----
+OSActiveDirectoryBackup            1
+OSRequireActiveDirectoryBackup     1
+OSActiveDirectoryInfoToStore       1
+ActiveDirectoryBackup              1
+RequireActiveDirectoryBackup       1
+
+
+Esquema LAPS y permisos en la OU:
+[AVISO ] No se encuentran los atributos LAPS en el esquema.
+
+[  OK  ] Script 09 finalizado. Log guardado en: C:\Evidencias\09-gpo-equipos-dc1-20261104-125136.log
+[ INFO ] PENDIENTE DE VERIFICAR: en cli01 (gpupdate /force y Get-LapsADPassword) y la clave BitLocker en AD.
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20261104125145
+**********************

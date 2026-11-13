@@ -1,0 +1,54 @@
+﻿
+Diagnóstico del servidor de directorio
+
+
+Realizando instalación inicial:
+
+   * Se identificó el bosque de AD. 
+   Recopilación de información inicial finalizada.
+
+
+Realizando pruebas requeridas iniciales
+
+   
+   Probando servidor: Zaragoza\DC1
+
+      Iniciando prueba: Connectivity
+
+         ......................... DC1 superó la prueba Connectivity
+
+
+
+Realizando pruebas principales
+
+   
+   Probando servidor: Zaragoza\DC1
+
+      Iniciando prueba: DFSREvent
+
+         Existen eventos de advertencia o de error en las últimas 24 horas
+
+         después de compartir SYSVOL. Los problemas de replicación de SYSVOL
+
+         incorrecta pueden ocasionar problemas de la directiva de grupo. 
+         ......................... DC1 no superó la prueba DFSREvent
+
+   
+   
+   Ejecutando pruebas de partición en: ForestDnsZones
+
+   
+   Ejecutando pruebas de partición en: DomainDnsZones
+
+   
+   Ejecutando pruebas de partición en: Schema
+
+   
+   Ejecutando pruebas de partición en: Configuration
+
+   
+   Ejecutando pruebas de partición en: ad
+
+   
+   Ejecutando pruebas de empresa en: ad.gestionnorte.es
+

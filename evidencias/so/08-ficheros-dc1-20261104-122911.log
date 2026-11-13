@@ -1,0 +1,169 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20261104122911
+Nombre de usuario: GESTIONNORTE\Administrador
+Usuario RunAs: GESTIONNORTE\Administrador
+Nombre de la configuración: 
+Máquina: DC1 (Microsoft Windows NT 10.0.26100.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Id. de proceso: 7528
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+========================================================================
+  SCRIPT 08 - FICHEROS CON SMB CIFRADO
+========================================================================
+[ INFO ] Ejecutado por : GESTIONNORTE\Administrador
+[ INFO ] Fecha y hora  : 04/11/2026 12:29:11
+[ INFO ] Carpeta raíz  : C:\Datos
+[ INFO ] Log           : C:\Evidencias\08-ficheros-dc1-20261104-122911.log
+
+========================================================================
+  1. PRECONDICIONES
+========================================================================
+[  OK  ] Dominio GESTIONNORTE.
+[  OK  ] Existen los 8 grupos DL_Fichero_* (script 05).
+[ INFO ] Grupo Administradores del sistema: BUILTIN\Administradores
+
+========================================================================
+  2. ROL SERVIDOR DE ARCHIVOS
+========================================================================
+[  OK  ] Rol Servidor de archivos presente. Reinicio necesario: No
+
+========================================================================
+  3. ENDURECIMIENTO DE SMB
+========================================================================
+
+
+EnableSMB1Protocol       : False
+EnableSMB2Protocol       : True
+RequireSecuritySignature : True
+EncryptData              : False
+
+
+
+[  OK  ] SMBv1 desactivado y firma SMB obligatoria.
+
+========================================================================
+  4. CARPETAS Y PERMISOS NTFS (AGDLP)
+========================================================================
+[  OK  ] Carpeta raíz creada: C:\Datos
+[  OK  ] Carpeta creada: C:\Datos\Laboral
+[  OK  ] Permisos NTFS aplicados en C:\Datos\Laboral (RW: modificar, RO: lectura).
+[  OK  ] Carpeta creada: C:\Datos\Fiscal
+[  OK  ] Permisos NTFS aplicados en C:\Datos\Fiscal (RW: modificar, RO: lectura).
+[  OK  ] Carpeta creada: C:\Datos\Administracion
+[  OK  ] Permisos NTFS aplicados en C:\Datos\Administracion (RW: modificar, RO: lectura).
+[  OK  ] Carpeta creada: C:\Datos\Atencion
+[  OK  ] Permisos NTFS aplicados en C:\Datos\Atencion (RW: modificar, RO: lectura).
+
+========================================================================
+  5. RECURSOS COMPARTIDOS CON CIFRADO SMB
+========================================================================
+[  OK  ] Recurso compartido creado: \\DC1\Laboral
+[  OK  ] Recurso compartido creado: \\DC1\Fiscal
+[  OK  ] Recurso compartido creado: \\DC1\Administracion
+[  OK  ] Recurso compartido creado: \\DC1\Atencion
+
+========================================================================
+  6. VERIFICACIÓN
+========================================================================
+Recursos compartidos:
+
+Name           Path                    EncryptData FolderEnumerationMode
+----           ----                    ----------- ---------------------
+Administracion C:\Datos\Administracion        True           AccessBased
+Atencion       C:\Datos\Atencion              True           AccessBased
+Fiscal         C:\Datos\Fiscal                True           AccessBased
+Laboral        C:\Datos\Laboral               True           AccessBased
+
+
+Permisos del recurso (compartido):
+
+Name    AccountName                        AccessControlType AccessRight
+----    -----------                        ----------------- -----------
+Laboral BUILTIN\Administradores                        Allow        Full
+Laboral GESTIONNORTE\DL_Fichero_Laboral_RW             Allow      Change
+Laboral GESTIONNORTE\DL_Fichero_Laboral_RO             Allow        Read
+
+
+
+Name   AccountName                       AccessControlType AccessRight
+----   -----------                       ----------------- -----------
+Fiscal BUILTIN\Administradores                       Allow        Full
+Fiscal GESTIONNORTE\DL_Fichero_Fiscal_RW             Allow      Change
+Fiscal GESTIONNORTE\DL_Fichero_Fiscal_RO             Allow        Read
+
+
+
+Name           AccountName                               AccessControlType AccessRight
+----           -----------                               ----------------- -----------
+Administracion BUILTIN\Administradores                               Allow        Full
+Administracion GESTIONNORTE\DL_Fichero_Administracion_RW             Allow      Change
+Administracion GESTIONNORTE\DL_Fichero_Administracion_RO             Allow        Read
+
+
+
+Name     AccountName                         AccessControlType AccessRight
+----     -----------                         ----------------- -----------
+Atencion BUILTIN\Administradores                         Allow        Full
+Atencion GESTIONNORTE\DL_Fichero_Atencion_RW             Allow      Change
+Atencion GESTIONNORTE\DL_Fichero_Atencion_RO             Allow        Read
+
+
+Permisos NTFS (sin herencia):
+  C:\Datos\Laboral
+
+IdentityReference                             FileSystemRights AccessControlType IsInherited
+-----------------                             ---------------- ----------------- -----------
+NT AUTHORITY\SYSTEM                                FullControl             Allow       False
+BUILTIN\Administradores                            FullControl             Allow       False
+GESTIONNORTE\DL_Fichero_Laboral_RW         Modify, Synchronize             Allow       False
+GESTIONNORTE\DL_Fichero_Laboral_RO ReadAndExecute, Synchronize             Allow       False
+
+
+  C:\Datos\Fiscal
+
+IdentityReference                            FileSystemRights AccessControlType IsInherited
+-----------------                            ---------------- ----------------- -----------
+NT AUTHORITY\SYSTEM                               FullControl             Allow       False
+BUILTIN\Administradores                           FullControl             Allow       False
+GESTIONNORTE\DL_Fichero_Fiscal_RW         Modify, Synchronize             Allow       False
+GESTIONNORTE\DL_Fichero_Fiscal_RO ReadAndExecute, Synchronize             Allow       False
+
+
+  C:\Datos\Administracion
+
+IdentityReference                                    FileSystemRights AccessControlType IsInherited
+-----------------                                    ---------------- ----------------- -----------
+NT AUTHORITY\SYSTEM                                       FullControl             Allow       False
+BUILTIN\Administradores                                   FullControl             Allow       False
+GESTIONNORTE\DL_Fichero_Administracion_RW         Modify, Synchronize             Allow       False
+GESTIONNORTE\DL_Fichero_Administracion_RO ReadAndExecute, Synchronize             Allow       False
+
+
+  C:\Datos\Atencion
+
+IdentityReference                              FileSystemRights AccessControlType IsInherited
+-----------------                              ---------------- ----------------- -----------
+NT AUTHORITY\SYSTEM                                 FullControl             Allow       False
+BUILTIN\Administradores                             FullControl             Allow       False
+GESTIONNORTE\DL_Fichero_Atencion_RW         Modify, Synchronize             Allow       False
+GESTIONNORTE\DL_Fichero_Atencion_RO ReadAndExecute, Synchronize             Allow       False
+
+
+[  OK  ] Los 4 recursos tienen EncryptData activado.
+
+[  OK  ] Script 08 finalizado. Log guardado en: C:\Evidencias\08-ficheros-dc1-20261104-122911.log
+[ INFO ] PENDIENTE DE VERIFICAR: acceso real de un usuario desde cli01 y Get-SmbConnection (Encrypted = True).
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20261104122921
+**********************

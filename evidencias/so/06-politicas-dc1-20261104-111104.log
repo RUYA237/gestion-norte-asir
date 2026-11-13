@@ -1,0 +1,89 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20261104111104
+Nombre de usuario: GESTIONNORTE\Administrador
+Usuario RunAs: GESTIONNORTE\Administrador
+Nombre de la configuración: 
+Máquina: DC1 (Microsoft Windows NT 10.0.26100.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Id. de proceso: 5432
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+========================================================================
+  SCRIPT 06 - POLÍTICA DE CONTRASEÑAS Y BLOQUEO
+========================================================================
+[ INFO ] Ejecutado por : GESTIONNORTE\Administrador
+[ INFO ] Fecha y hora  : 04/11/2026 11:11:04
+[ INFO ] Log           : C:\Evidencias\06-politicas-dc1-20261104-111104.log
+
+========================================================================
+  1. PRECONDICIONES
+========================================================================
+[  OK  ] Controlador de dominio. Dominio: ad.gestionnorte.es
+
+========================================================================
+  2. POLÍTICA DE DOMINIO (Default Domain Policy)
+========================================================================
+[  OK  ] Política de dominio aplicada: longitud 12, complejidad, historial 24, caducidad 90 días, bloqueo a los 5 fallos (30 min).
+
+========================================================================
+  3. POLÍTICA GRANULAR PARA ADMINISTRADORES (PSO)
+========================================================================
+[ INFO ] Grupo administradores del dominio (SID -512): Admins. del dominio
+[  OK  ] Política creada: PSO-Administradores (precedencia 10, longitud 15, bloqueo a los 3 fallos).
+[  OK  ] PSO-Administradores aplicada a Admins. del dominio.
+
+========================================================================
+  4. VERIFICACIÓN
+========================================================================
+Política de dominio:
+
+
+ComplexityEnabled        : True
+MinPasswordLength        : 12
+PasswordHistoryCount     : 24
+MaxPasswordAge           : 90.00:00:00
+MinPasswordAge           : 1.00:00:00
+LockoutThreshold         : 5
+LockoutDuration          : 00:30:00
+LockoutObservationWindow : 00:30:00
+
+
+
+Políticas granulares (PSO):
+
+
+Name              : PSO-Administradores
+Precedence        : 10
+MinPasswordLength : 15
+LockoutThreshold  : 3
+AppliesTo         : {CN=Admins. del dominio,CN=Users,DC=ad,DC=gestionnorte,DC=es}
+
+
+
+Política resultante para Administrador (cuenta de administrador integrada):
+
+
+Name              : PSO-Administradores
+MinPasswordLength : 15
+LockoutThreshold  : 3
+MaxPasswordAge    : 60.00:00:00
+
+
+
+Política resultante para un usuario normal (daniel.ortega):
+
+[  OK  ] Script 06 finalizado. Log guardado en: C:\Evidencias\06-politicas-dc1-20261104-111104.log
+[ INFO ] SIGUIENTE PASO: captura 18 (verificación) y prueba de bloqueo con un usuario de prueba.
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20261104111108
+**********************
