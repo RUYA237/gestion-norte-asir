@@ -1,0 +1,4 @@
+﻿Se tuvo acceso a un objeto de recurso compartido de red.
+Nombre de cuenta:		daniel.ortega
+Dirección de origen:		10.1.20.5
+---

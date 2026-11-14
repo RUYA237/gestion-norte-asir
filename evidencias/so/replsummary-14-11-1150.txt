@@ -1,0 +1,32 @@
+﻿Tiempo de comienzo del resumen de replicación: 2026-11-14 12:02:49
+
+
+
+Comenzando recolección de datos para el resumen de replicación, puede tomar tiempo:
+
+  .....
+
+
+
+
+
+DSA de origen         diferencia mayor    errores/total %%   error
+
+ DC1                       06m:22s    0 /   5    0  
+
+ DC2                       08m:55s    0 /   5    0  
+
+
+
+
+
+DSA de destino     diferencia mayor    errores/total %%   error
+
+ DC1                       08m:55s    0 /   5    0  
+
+ DC2                       06m:22s    0 /   5    0  
+
+
+
+
+
