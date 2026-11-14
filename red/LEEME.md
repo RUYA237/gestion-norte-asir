@@ -1,6 +1,6 @@
 # Configuración de ubu-fw (red/)
 
-Cada fichero del repositorio va, con ese nombre, a la ruta indicada en ubu-fw. Estado: borrador, pendiente de verificar.
+Cada fichero del repositorio va, con ese nombre, a la ruta indicada en ubu-fw. Estado: implementado en el laboratorio de VMware el 03/11 para las VLAN 10 a 40 (capturas en `evidencias/redes/20261103-*` y `20261104-*`). Las VLAN 50 a 80, las reglas de los servicios de ubu-svc, wazuh01 y bkp01, OpenVPN y el bastión son propuestos y no están en estos ficheros.
 
 | Fichero del repo | Ruta en ubu-fw | Qué hace |
 |---|---|---|
