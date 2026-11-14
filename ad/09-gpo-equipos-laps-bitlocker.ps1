@@ -169,7 +169,7 @@ Write-Host 'Valores BitLocker:' -ForegroundColor White
 Get-GPRegistryValue -Name $NombreGPO -Key $fve | Format-Table ValueName, Value -AutoSize
 
 Write-Host 'Esquema LAPS y permisos en la OU:' -ForegroundColor White
-$esquema = Get-ADObject -Filter "Name -like 'ms-LAPS-Password*'" -SearchBase (Get-ADRootDSE).schemaNamingContext -ErrorAction SilentlyContinue
+$esquema = Get-ADObject -Filter "Name -like 'msLAPS-Password*'" -SearchBase (Get-ADRootDSE).schemaNamingContext -ErrorAction SilentlyContinue
 if ($esquema) { Write-Ok "Atributos LAPS en el esquema: $($esquema.Count)." }
 else { Write-Aviso 'No se encuentran los atributos LAPS en el esquema.' }
 
