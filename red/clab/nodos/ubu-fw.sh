@@ -1,32 +1,13 @@
-#!/bin/bash
-# ubu-fw en la maqueta: router entre VLAN (troncal 802.1Q), extremo de los túneles de
-# las sedes, OSPF y salida a Internet con dos líneas (fibra principal y 4G de respaldo).
-# Las direcciones IP y las rutas están en frr.conf; aquí solo se crean las interfaces.
-set -eu
-. /config/lib-router.sh
-preparar
-
-# 1. VLAN de Zaragoza sobre el troncal que llega de sw-zgz-core
-vlans troncal 10 20 30 40
-
-# 2. Túneles WireGuard: uno por sede y por línea. Escucha en 51820-51823/udp.
-#    fwmark marca los paquetes cifrados de cada túnel para mandarlos por su línea.
-tunel wg-hue-f ubu-fw rt-hue listen-port 51820 fwmark 0x3
-tunel wg-hue-m ubu-fw rt-hue listen-port 51821 fwmark 0x4
-tunel wg-ter-f ubu-fw rt-ter listen-port 51822 fwmark 0x3
-tunel wg-ter-m ubu-fw rt-ter listen-port 51823 fwmark 0x4
-
-# 3. Enrutamiento por marca: la tabla 3 sale por la fibra y la 4 por el 4G.
-#    Si la línea cae, su tabla se queda en "unreachable" y el túnel muere en lugar
-#    de irse por la otra línea: así OSPF detecta la caída y cambia de túnel.
-ip rule add fwmark 0x3 lookup 3 priority 100
-ip rule add fwmark 0x4 lookup 4 priority 101
-ip route add unreachable default metric 4000 table 3
-ip route add unreachable default metric 4000 table 4
-
-# 4. Firewall (misma política que el ubu-fw real, con conjuntos para las tres sedes)
-nft -f /config/nftables.nft
-
-# 5. FRR: direcciones, rutas estáticas y OSPF
-arrancar_frr
-echo "ubu-fw configurado"
+. /config/lib.sh
+ip link set eth1 up
+for v in 10 20 30 40 50 60 70 80; do vlan_if eth1 "$v" "10.1.$v.1/24"; done
+ip link set wan up
+ip addr add 203.0.113.2/30 dev wan
+ip route replace default via 203.0.113.1
+ip addr add 10.255.0.1/32 dev lo
+ip link set eth2 up
+ip addr add 10.255.12.1/30 dev eth2
+ip link set eth3 up
+ip addr add 10.255.13.1/30 dev eth3
+ip route add 10.2.0.0/16 via 10.255.12.2
+ip route add 10.3.0.0/16 via 10.255.13.2

@@ -1,73 +1,70 @@
-# Maqueta de la red de producción (containerlab)
+# Maqueta de la red de producción (containerlab), versión final de 26 nodos
 
-Simula la red de Gestión Norte que VMware no puede simular: VLAN 802.1Q, dos núcleos con STP y tres accesos en Zaragoza, cuatro switches de sede en Huesca y Teruel (dos en esta maqueta), un túnel WireGuard por sede hacia ubu-fw y OSPF dentro de los túneles. Sin 4G (D38) y sin firewall: las reglas de firewall se prueban en VMware y se definen en Seguridad. Los servicios (Kea, Unbound, Active Directory) siguen en VMware; aquí solo se prueba la red.
+Es la versión documentada en el apartado 4.1 de la memoria: Zaragoza (15 nodos), Huesca (6) y Teruel (5), con enlaces directos entre ubu-fw y cada sede y rutas estáticas. Sin firewall, sin WireGuard y sin OSPF (propuestos).
 
-Estado: topología v2 escrita el 05/11, **pendiente de verificar** (primer `deploy`). Direcciones en `PLAN-DIRECCIONES.md`.
+Estado: verificada el 06/11 en WSL2 (containerlab 0.81.1). En Fedora: pendiente de verificar.
 
-## Qué hay
+## Ficheros
 
-| Nodo | Papel | En producción sería |
-|---|---|---|
-| `zgz-n1`, `zgz-n2` | Núcleos de Zaragoza; `zgz-n1` es la raíz de STP | Dos switches de núcleo |
-| `zgz-a1`, `zgz-a2`, `zgz-a3` | Accesos de Zaragoza; cada uno sube a los dos núcleos | Tres switches de acceso |
-| `ubu-fw` | Router entre VLAN (troncal con subinterfaces) y extremo de los túneles | ubu-fw (en producción, pareja con VRRP) |
-| `rt-hue`, `rt-ter` | Router de sede: VLAN de la sede y un túnel hacia ubu-fw | Router pequeño con WireGuard |
-| `sw-hue1`, `sw-hue2`, `sw-ter1`, `sw-ter2` | Switches de sede en cascada | Cuatro switches de sede (D36) |
-| `inet` | Internet y los proveedores (no conoce las redes 10.x) | Internet |
-| `srv-dc1`, `pc-*`, `prn-zgz` | Equipos de prueba con IP fija | Servidores, puestos e impresoras |
-
-Todo usa una sola imagen, `gn-red:1.0` (Ubuntu 24.04 con FRR, WireGuard e iproute2), creada con el `Dockerfile` de esta carpeta.
-
-| Fichero | Qué contiene | Estado |
-|---|---|---|
-| `gestion-norte.clab.yml` | Topología v2: nodos, enlaces y qué fichero carga cada uno | Escrito |
-| `PLAN-DIRECCIONES.md` | Direcciones de VLAN, túneles, loopbacks y hosts | Escrito |
-| `nodos/` | Configuración de cada nodo (switches, `ubu-fw`, `rt-sede`, `inet`) | Pendiente de reescribir para la v2 |
-| `frr/*.conf` | Direcciones y OSPF de cada router | Pendiente de reescribir para la v2 |
-| `gen-claves.sh` | Genera las claves de WireGuard en `claves/` (no se suben a Git) | Vigente |
-| `pruebas.sh` | Pruebas de la memoria, una captura por bloque | Pendiente de adaptar a la v2 |
-
-## Ruta actual: contenedor en Docker Desktop (D37)
-
-Raúl ha decidido no usar WSL. La maqueta corre en un contenedor `gestion-containerlab-red` creado desde Windows con Docker Desktop. Sin `--privileged`, con solo las capacidades que necesita.
-
-**1. Crear el contenedor (PowerShell de Windows):**
-
-```
-docker run -it --name gestion-containerlab-red --cap-add NET_ADMIN --cap-add SYS_ADMIN --pid host -v //var/run/docker.sock://var/run/docker.sock ubuntu:24.04 bash
-```
-
-- `NET_ADMIN`: crear interfaces, puentes y rutas.
-- `SYS_ADMIN`: montar los espacios de red de cada nodo. Es la más amplia de las dos; se justifica en la memoria.
-- `--pid host`: localizar los procesos de los nodos.
-- El montaje del socket: sin él, containerlab no puede pedir al demonio que cree los nodos. Equivale a root en el anfitrión.
-
-**2. Dentro del contenedor:**
-
-```
-apt update && apt install -y curl git gh docker.io wireguard-tools iproute2 ca-certificates
-gh auth login
-gh repo clone RUYA237/gestion-norte-asir ~/gestion-norte-asir
-gh auth logout -h github.com
-ls ~/gestion-norte-asir/red/clab/gestion-norte.clab.yml
-```
-
-Estado 04/11: clonado y comprobado (la sesión de GitHub se cierra después del clon). **Pendiente:** instalar containerlab dentro del contenedor, `deploy` y pruebas P1-P6. Si el `deploy` pide otra capacidad, se añade esa y no `--privileged`.
-
-
-## Uso diario
-
-| Para | Comando |
+| Fichero | Contenido |
 |---|---|
-| Ver los nodos | `sudo containerlab inspect -t gestion-norte.clab.yml` |
-| Entrar en un nodo | `docker exec -it clab-gestion-norte-ubu-fw bash` |
-| Consola de FRR (como un router Cisco) | `docker exec -it clab-gestion-norte-ubu-fw vtysh` |
-| Parar y borrar la maqueta | `sudo containerlab destroy -t gestion-norte.clab.yml --cleanup` |
-| Subir evidencias a Git | `cd ~/gestion-norte-asir && git add evidencias && git commit -m "Redes: maqueta containerlab, prueba N" && git push` |
+| `gestion-norte.clab.yml` | Los 26 nodos y los 28 enlaces |
+| `Dockerfile` | Imagen única `gn-red:1.0` |
+| `nodos/lib.sh` | Funciones comunes: subinterfaz VLAN, puente, troncal, acceso, root guard |
+| `nodos/sw.sh` | Configuración de los 9 switches |
+| `nodos/ubu-fw.sh` | Router entre VLAN, WAN y enlaces a las sedes |
+| `nodos/rt-sede.sh` | Router de Huesca (2) y de Teruel (3) |
+| `nodos/host.sh` | Equipos de prueba con IP fija |
+| `nodos/inet.sh` | Internet simulado (8.8.8.8) |
+| `pruebas.sh` | Pruebas P1 a P5 y acceso de los 12 equipos a srv-dc1 |
 
-## Qué no simula (se declara en la memoria)
+## Instalar en Fedora (una vez)
 
-- DHCP snooping, protección de puerto por MAC y 802.1X: los puentes Linux no los tienen. Se proponen en los switches reales.
-- El reparto de direcciones (Kea) y el DNS (Unbound): ya están probados en VMware; aquí los equipos llevan IP fija.
-- El firewall: no forma parte de la maqueta (D38 y Seguridad).
-- Rendimiento real de la fibra y de los túneles: los enlaces son virtuales.
+```
+sudo dnf install -y dnf-plugins-core git
+sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+sudo dnf install -y docker-ce docker-ce-cli containerd.io
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+bash -c "$(curl -sL https://get.containerlab.dev)"
+sudo modprobe -a bridge 8021q
+```
+
+Cierra la sesión y vuelve a entrar para que el grupo `docker` tenga efecto.
+
+## Desplegar y probar
+
+```
+cd red/clab
+chcon -Rt container_file_t nodos
+docker build -t gn-red:1.0 .
+sudo containerlab deploy -t gestion-norte.clab.yml
+sudo containerlab inspect -t gestion-norte.clab.yml
+./pruebas.sh | tee pruebas-$(date +%Y%m%d-%H%M).log
+```
+
+## Prueba P6: cortes de enlace (a mano)
+
+```
+docker exec clab-gestion-norte-ubu-fw ip link set wan down
+docker exec clab-gestion-norte-pc-lab-hue ping -c2 -W2 8.8.8.8
+docker exec clab-gestion-norte-pc-lab-hue ping -c2 -W2 10.1.20.10
+docker exec clab-gestion-norte-ubu-fw bash -c "ip link set wan up; ip route replace default via 203.0.113.1"
+
+docker exec clab-gestion-norte-ubu-fw ip link set eth2 down
+docker exec clab-gestion-norte-pc-lab-hue ping -c2 -W2 10.1.20.10
+docker exec clab-gestion-norte-pc-fis-ter ping -c2 -W2 10.1.20.10
+docker exec clab-gestion-norte-ubu-fw bash -c "ip link set eth2 up; ip route replace 10.2.0.0/16 via 10.255.12.2"
+```
+
+Resultado esperado: con la WAN caída no hay Internet y sí se llega a srv-dc1; con eth2 caído solo Huesca queda aislada.
+
+## Parar
+
+```
+sudo containerlab destroy -t gestion-norte.clab.yml --cleanup
+```
+
+## Qué no simula
+
+Firewall (se prueba en VMware con ubu-fw), Kea y Unbound (los equipos llevan IP fija), WireGuard y OSPF (propuestos), DHCP snooping, límite de MAC y 802.1X (propuestos para los switches reales). En las sedes solo se montan las VLAN 30, 40 y 80 (Huesca) y 40 y 80 (Teruel).
