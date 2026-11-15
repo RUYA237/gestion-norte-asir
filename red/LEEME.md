@@ -1,14 +1,42 @@
 # Configuración de ubu-fw (red/)
 
-Cada fichero del repositorio va, con ese nombre, a la ruta indicada en ubu-fw. Estado: borrador, pendiente de verificar.
+Estado: las VLAN 10 a 40 se implementaron en VMware el 03/11 (capturas en `evidencias/redes/20261103-*` y `20261104-*`). La versión del 14/11 añade las VLAN 50 a 80, las reglas de los servicios y la hora: validada en sintaxis (`nft -c`), pendiente de verificar en ubu-fw. Las ocho VLAN se verificaron en ubu-fw el 14 y 15/11. OpenVPN con certificado, contraseña local y TOTP se montó el 15/11 (`instalar-vpn.sh` recoge los mismos pasos que se hicieron a mano; las claves, los certificados y el perfil del empleado no se suben al repositorio). El bastión endurecido es propuesto.
 
 | Fichero del repo | Ruta en ubu-fw | Qué hace |
 |---|---|---|
-| `config-red-vlan.yaml.plantilla` | `/etc/netplan/config-red-vlan.yaml` | Nombra las tarjetas por MAC (`wan`, `v10`, `v20`, `v30`, `v40`) y les da la IP `.1` de cada VLAN |
+| `ubu-fw-tarjetas.vmx.txt` | Fichero `.vmx` de la máquina (en el anfitrión) | Nueve tarjetas con MAC fija: WAN por NAT y VMnet11 a VMnet18 para las VLAN 10 a 80 |
+| `config-red-vlan.yaml` | `/etc/netplan/config-red-vlan.yaml` | Nombra las tarjetas por MAC (`wan`, `v10` a `v80`) y les da la IP `.1` de cada VLAN |
 | `sysctl-seguridad-red.conf` | `/etc/sysctl.d/99-seguridad-red.conf` | Antisuplantación (rp_filter), sin redirecciones, sin enrutamiento de origen |
 | `nftables.conf` | `/etc/nftables.conf` | Firewall: política por defecto denegar y registrar |
+| `activar-reenvio.conf` | `/etc/systemd/system/nftables.service.d/activar-reenvio.conf` | Activa el reenvío solo después de cargar las reglas |
 | `dns-gestion-norte.conf` | `/etc/unbound/unbound.conf.d/dns-gestion-norte.conf` | DNS: zona de AD hacia dc1/dc2, el resto a Internet |
-| `kea-dhcp4.conf` | `/etc/kea/kea-dhcp4.conf` | DHCP de las VLAN 30 y 40 |
+| `kea-dhcp4.conf` | `/etc/kea/kea-dhcp4.conf` | DHCP de las VLAN 30, 40, 50, 60 y 80 |
+| `chrony-gestion-norte.conf` | `/etc/chrony/conf.d/gestion-norte.conf` | Sirve la hora a las VLAN 10 y 20 |
+| `instalar-ubu-fw.sh` | Se ejecuta con sudo desde esta carpeta | Instala los paquetes, copia cada fichero a su ruta, valida y arranca |
+| `ubu-fw-tarjetas-nuevas.vmx.txt` | Fichero `.vmx` de la ubu-fw del 03/11 | Añade las cuatro tarjetas de las VLAN 50 a 80 (VMnet15 a VMnet18) con MAC fija |
+| `actualizar-ubu-fw.sh` | Se ejecuta con sudo en la ubu-fw del 03/11 | Guarda copia de la configuración, añade las VLAN 50 a 80 al netplan y carga los ficheros nuevos; tras reiniciar, comprueba el estado |
+
+## Matriz de permisos de `nftables.conf` (14/11)
+
+Todo lo que no aparece se deniega y se registra.
+
+| Origen | Destino | Permitido |
+|---|---|---|
+| VLAN 10 a 70 | ubu-fw | Ping con límite |
+| VLAN 30, 40, 50, 60 y 80 | ubu-fw | DHCP |
+| VLAN 10 a 60 | ubu-fw | DNS |
+| VLAN 10 y 20 | ubu-fw | Hora (NTP) |
+| VLAN 10 | ubu-fw | SSH |
+| VLAN 30 a 60 | Internet | Web (TCP 80 y 443, UDP 443) |
+| VLAN 30 a 60 | dc1 y dc2 | Puertos de Active Directory |
+| VLAN 30 a 60 | ubu-svc (10.1.20.20) | 443 (web por Caddy). El 5432 de PostgreSQL no se abre |
+| VLAN 30 a 60 | wazuh01 (10.1.20.30) | 1514 y 1515 (agentes) |
+| VLAN 30 a 60 | VLAN 70 | Impresión (631 y 9100) |
+| VLAN 80 | Internet | Web y DNS solo hacia Quad9; nada hacia direcciones privadas |
+| VLAN 10 | VLAN 20 | SSH, 443, escritorio remoto, WinRM con TLS y ping |
+| VLAN 10 y 20 | Internet | Web (actualizaciones) |
+
+Los invitados no usan el DNS interno: reciben Quad9 por DHCP para que no puedan consultar los nombres del dominio. Los equipos de la VLAN 20 se ven entre sí sin pasar por ubu-fw; eso lo limita el cortafuegos de cada servidor (propuesto).
 
 El reenvío de paquetes (`ip_forward`) no está en sysctl: lo activa `nftables.service` después de cargar las reglas
 (`/etc/systemd/system/nftables.service.d/activar-reenvio.conf`), para que nunca haya un momento con el reenvío activo y sin firewall.

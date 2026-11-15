@@ -1,153 +1,70 @@
-# Maqueta de la red de producción (containerlab)
+# Maqueta de la red de producción (containerlab), versión final de 26 nodos
 
-Simula la red real de Gestión Norte, que VMware no puede simular: switches con VLAN 802.1Q y troncales, las tres sedes, los túneles WireGuard hasta ubu-fw y OSPF con la línea 4G de respaldo. Los servicios (Kea, Unbound, Active Directory) siguen en el laboratorio de VMware; aquí solo se prueba la red.
+Es la versión documentada en el apartado 4.1 de la memoria: Zaragoza (15 nodos), Huesca (6) y Teruel (5), con enlaces directos entre ubu-fw y cada sede y rutas estáticas. Sin firewall, sin WireGuard y sin OSPF (propuestos).
 
-Estado: preparado el 04/11, **pendiente de verificar** (primer despliegue en WSL).
+Estado: verificada el 06/11 en WSL2 (containerlab 0.81.1). En Fedora: pendiente de verificar.
 
-## Qué hay
+## Ficheros
 
-| Nodo | Papel | En producción sería |
-|---|---|---|
-| `ubu-fw` | Router entre VLAN (troncal con subinterfaces v10-v40), extremo de los 4 túneles, OSPF, NAT y firewall con la política del ubu-fw real | ubu-fw |
-| `sw-zgz-core`, `sw-zgz-acc1` | Switch de núcleo (raíz de STP) y switch de acceso de Zaragoza | Switch de núcleo y 3 switches de acceso |
-| `rt-hue`, `rt-ter` | Router de sede: VLAN de la sede, 2 túneles (fibra y 4G de Zaragoza), OSPF, salida local solo para invitados | Router pequeño con WireGuard |
-| `sw-hue`, `sw-ter` | Switch de sede | Switch gestionable de la sede |
-| `inet` | Internet y los proveedores (no conoce las redes 10.x) | Internet |
-| `srv-dc1`, `pc-*` | Equipos de prueba con IP fija (el reparto con Kea ya está probado en VMware) | Servidores y puestos |
-
-Todo usa una sola imagen, `gn-red:1.0` (Ubuntu 24.04 con FRR, nftables, WireGuard e iproute2), creada con el `Dockerfile` de esta carpeta.
-
-| Fichero | Qué contiene |
+| Fichero | Contenido |
 |---|---|
-| `gestion-norte.clab.yml` | Topología: nodos, enlaces y qué fichero carga cada uno |
-| `nodos/sw-*.sh` + `nodos/lib-switch.sh` | Configuración de cada switch: puertos de acceso, troncales, STP, BPDU guard, root guard, IP de gestión |
-| `nodos/ubu-fw.sh`, `nodos/rt-sede.sh` + `nodos/lib-router.sh` | Subinterfaces 802.1Q, túneles WireGuard, enrutamiento por marca |
-| `frr/*.conf` | Direcciones, rutas estáticas y OSPF de cada router (sintaxis tipo Cisco) |
-| `nft/*.nft` | Firewall de ubu-fw (conjuntos para las tres sedes) y del router de sede |
-| `gen-claves.sh` | Genera las claves de WireGuard en `claves/` (no se suben a Git) |
-| `pruebas.sh` | Las 6 pruebas de la memoria, una captura por bloque |
+| `gestion-norte.clab.yml` | Los 26 nodos y los 28 enlaces |
+| `Dockerfile` | Imagen única `gn-red:1.0` |
+| `nodos/lib.sh` | Funciones comunes: subinterfaz VLAN, puente, troncal, acceso, root guard |
+| `nodos/sw.sh` | Configuración de los 9 switches |
+| `nodos/ubu-fw.sh` | Router entre VLAN, WAN y enlaces a las sedes |
+| `nodos/rt-sede.sh` | Router de Huesca (2) y de Teruel (3) |
+| `nodos/host.sh` | Equipos de prueba con IP fija |
+| `nodos/inet.sh` | Internet simulado (8.8.8.8) |
+| `pruebas.sh` | Pruebas P1 a P5 y acceso de los 12 equipos a srv-dc1 |
 
-## Ruta actual: contenedor en Docker Desktop (D37)
-
-Raúl ha decidido no usar WSL. La maqueta corre en un contenedor `gestion-containerlab-red` creado desde Windows con Docker Desktop. Sin `--privileged`, con solo las capacidades que necesita.
-
-**1. Crear el contenedor (PowerShell de Windows):**
+## Instalar en Fedora (una vez)
 
 ```
-docker run -it --name gestion-containerlab-red --cap-add NET_ADMIN --cap-add SYS_ADMIN --pid host -v //var/run/docker.sock://var/run/docker.sock ubuntu:24.04 bash
+sudo dnf install -y dnf-plugins-core git
+sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+sudo dnf install -y docker-ce docker-ce-cli containerd.io
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+bash -c "$(curl -sL https://get.containerlab.dev)"
+sudo modprobe -a bridge 8021q
 ```
 
-- `NET_ADMIN`: crear interfaces, puentes y rutas.
-- `SYS_ADMIN`: montar los espacios de red de cada nodo. Es la más amplia de las dos; se justifica en la memoria.
-- `--pid host`: localizar los procesos de los nodos.
-- El montaje del socket: sin él, containerlab no puede pedir al demonio que cree los nodos. Equivale a root en el anfitrión.
+Cierra la sesión y vuelve a entrar para que el grupo `docker` tenga efecto.
 
-**2. Dentro del contenedor:**
+## Desplegar y probar
 
 ```
-apt update && apt install -y curl git gh docker.io wireguard-tools iproute2 ca-certificates
-gh auth login
-gh repo clone RUYA237/gestion-norte-asir ~/gestion-norte-asir
-gh auth logout -h github.com
-ls ~/gestion-norte-asir/red/clab/gestion-norte.clab.yml
-```
-
-Estado 04/11: clonado y comprobado (la sesión de GitHub se cierra después del clon). **Pendiente:** instalar containerlab dentro del contenedor, `deploy` y pruebas P1-P6. Si el `deploy` pide otra capacidad, se añade esa y no `--privileged`.
-
-## Cómo arrancarla (primera vez, en WSL: ruta descartada por D37)
-
-La maqueta corre dentro de WSL2 (Ubuntu 24.04) en el PC de Raúl, sin máquina virtual de VMware. Docker va **dentro de WSL** (Docker Engine), no con Docker Desktop. Los comandos de los pasos 1 y 2 se pegan en PowerShell; el resto, en la terminal de Ubuntu.
-
-**1. WSL2 con Ubuntu 24.04** (PowerShell como administrador; si ya lo tienes, `wsl -l -v` debe mostrar Ubuntu-24.04 con VERSION 2):
-
-```
-wsl --install -d Ubuntu-24.04
-```
-
-Reinicia si lo pide y crea tu usuario de Linux. Nota: WSL2 usa la plataforma de virtualización de Windows; VMware Workstation 17 convive con ella pero puede ir más lento.
-
-**2. Memoria y systemd.** Crea `C:\Users\RUYA\.wslconfig` con 6 GB (4 GB para la maqueta y el resto para Linux):
-
-```
-[wsl2]
-memory=6GB
-processors=2
-```
-
-En Ubuntu activa systemd (Docker lo necesita) y reinicia WSL:
-
-```
-printf '[boot]\nsystemd=true\n' | sudo tee /etc/wsl.conf
-```
-
-```
-wsl --shutdown
-```
-
-**3. Comprueba que el kernel de WSL sirve** (en Ubuntu). Deben salir los dos «OK»; si no, `wsl --update` en PowerShell y repite:
-
-```
-sudo ip link add brtest type bridge vlan_filtering 1 && sudo ip link del brtest && echo "Puente con VLAN: OK"
-sudo ip link add wgtest type wireguard && sudo ip link del wgtest && echo "WireGuard: OK"
-```
-
-**4. Instala Docker y containerlab** (script oficial de containerlab):
-
-```
-curl -sL https://containerlab.dev/setup | sudo -E bash -s "all"
-sudo sysctl -w net.netfilter.nf_log_all_netns=1 || echo "sin registro del firewall en dmesg (no es grave)"
-```
-
-Cierra Ubuntu, vuelve a abrirlo (para que tu usuario quede en el grupo de Docker) y comprueba `docker run --rm hello-world`.
-
-**5. Descarga el repositorio dentro de Linux** (en `~`, no en `/mnt/c`: los enlaces y permisos fallan en el disco de Windows). Es privado: `gh` te da un código para autorizarlo en el navegador de Windows:
-
-```
-sudo apt install -y gh
-gh auth login
-gh repo clone RUYA237/gestion-norte-asir
-git config --global user.name "Raúl"
-git config --global user.email "TU_CORREO"
-```
-
-**6. Crea la imagen, las claves y despliega:**
-
-```
-cd ~/gestion-norte-asir/red/clab
+cd red/clab
+chcon -Rt container_file_t nodos
 docker build -t gn-red:1.0 .
-./gen-claves.sh
 sudo containerlab deploy -t gestion-norte.clab.yml
+sudo containerlab inspect -t gestion-norte.clab.yml
+./pruebas.sh | tee pruebas-$(date +%Y%m%d-%H%M).log
 ```
 
-Al final sale una tabla con los 16 nodos en estado `running`. Cada nodo imprime «… configurado» durante el despliegue; si alguno da error, cópialo tal cual.
-
-**7. Diagrama automático** (captura para la memoria). Abre en el navegador de Windows `http://localhost:50080`:
+## Prueba P6: cortes de enlace (a mano)
 
 ```
-sudo containerlab graph -t gestion-norte.clab.yml
+docker exec clab-gestion-norte-ubu-fw ip link set wan down
+docker exec clab-gestion-norte-pc-lab-hue ping -c2 -W2 8.8.8.8
+docker exec clab-gestion-norte-pc-lab-hue ping -c2 -W2 10.1.20.10
+docker exec clab-gestion-norte-ubu-fw bash -c "ip link set wan up; ip route replace default via 203.0.113.1"
+
+docker exec clab-gestion-norte-ubu-fw ip link set eth2 down
+docker exec clab-gestion-norte-pc-lab-hue ping -c2 -W2 10.1.20.10
+docker exec clab-gestion-norte-pc-fis-ter ping -c2 -W2 10.1.20.10
+docker exec clab-gestion-norte-ubu-fw bash -c "ip link set eth2 up; ip route replace 10.2.0.0/16 via 10.255.12.2"
 ```
 
-**8. Pruebas** (espera 20 s después del despliegue para que STP y OSPF terminen). Cada una es una captura; además se guarda la salida en texto como evidencia:
+Resultado esperado: con la WAN caída no hay Internet y sí se llega a srv-dc1; con eth2 caído solo Huesca queda aislada.
+
+## Parar
 
 ```
-sudo ./pruebas.sh 1 | tee ~/gestion-norte-asir/evidencias/redes/20261105-raul-clab-p1.txt
+sudo containerlab destroy -t gestion-norte.clab.yml --cleanup
 ```
 
-(cambia el 1 por 2 … 6).
+## Qué no simula
 
-## Uso diario
-
-| Para | Comando |
-|---|---|
-| Ver los nodos | `sudo containerlab inspect -t gestion-norte.clab.yml` |
-| Entrar en un nodo | `docker exec -it clab-gestion-norte-ubu-fw bash` |
-| Consola de FRR (como un router Cisco) | `docker exec -it clab-gestion-norte-ubu-fw vtysh` |
-| Ver lo bloqueado por los firewalls | `sudo dmesg \| grep -E "fw-\|sede-"` |
-| Parar y borrar la maqueta | `sudo containerlab destroy -t gestion-norte.clab.yml --cleanup` |
-| Subir evidencias a Git | `cd ~/gestion-norte-asir && git add evidencias && git commit -m "Redes: maqueta containerlab, prueba N" && git push` |
-
-## Qué no simula (se declara en la memoria)
-
-- DHCP snooping, protección de puerto por MAC y 802.1X: los puentes Linux no los tienen. Se proponen en los switches reales.
-- El reparto de direcciones (Kea) y el DNS (Unbound): ya están probados en VMware; aquí los equipos llevan IP fija.
-- Rendimiento real de la fibra y del 4G: los enlaces son virtuales.
+Firewall (se prueba en VMware con ubu-fw), Kea y Unbound (los equipos llevan IP fija), WireGuard y OSPF (propuestos), DHCP snooping, límite de MAC y 802.1X (propuestos para los switches reales). En las sedes solo se montan las VLAN 30, 40 y 80 (Huesca) y 40 y 80 (Teruel).

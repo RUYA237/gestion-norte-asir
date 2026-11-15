@@ -16,17 +16,17 @@ Si algo de aquí cambia, se cambia primero en este fichero y después en las con
 | 20 | SERVIDORES | 10.1.20.0/24 | VMnet12 | dc1, dc2, ubu-svc, wazuh01, bkp01 | Sí |
 | 30 | LABORAL | 10.1.30.0/24 | VMnet13 | Asesoría laboral | Sí (cli01) |
 | 40 | FISCAL | 10.1.40.0/24 | VMnet14 | Asesoría fiscal | Sí |
-| 50 | ADMIN | 10.1.50.0/24 | VMnet15 | Administración y facturación | Diseño |
-| 60 | ATENCION | 10.1.60.0/24 | VMnet16 | Atención y gestión de clientes | Diseño |
-| 70 | IMPRESORAS | 10.1.70.0/24 | VMnet17 | Impresoras y multifunción | Diseño |
-| 80 | INVITADOS | 10.1.80.0/24 | VMnet18 | Wi-Fi de visitas (red pública), aislada y solo Internet (D28) | Diseño |
-| 90 | VPN-USR | 10.1.90.0/24 | tun0 | Teletrabajo | Sí (paso VPN) |
-| 91 | VPN-ADM | 10.1.91.0/24 | tun0 (CCD) | Administradores en remoto | Sí (paso VPN) |
-| — | WG-SEDES | 10.0.0.0/24 | wg-* | Un /30 por túnel, dos túneles por sede (fibra y 4G de Zaragoza): Huesca 10.0.0.0/30 y .4/30, Teruel .8/30 y .12/30, 4ª sede .16/30 y .20/30. OSPF coste 10 (fibra) y 100 (4G) | Maqueta containerlab (D35) |
+| 50 | ADMIN | 10.1.50.0/24 | VMnet15 | Administración y facturación | Configurado el 14/11, pendiente de verificar |
+| 60 | ATENCION | 10.1.60.0/24 | VMnet16 | Atención y gestión de clientes | Configurado el 14/11, pendiente de verificar |
+| 70 | IMPRESORAS | 10.1.70.0/24 | VMnet17 | Impresoras y multifunción | Configurado el 14/11, pendiente de verificar |
+| 80 | INVITADOS | 10.1.80.0/24 | VMnet18 | Wi-Fi de visitas (red pública), aislada y solo Internet (D28) | Configurado el 14/11, pendiente de verificar |
+| — | VPN-USR | 10.0.1.0/24 | tun0 | Teletrabajo (no es una VLAN) | Propuesto |
+| — | VPN-ADM | 10.0.2.0/24 | tun1 | Administradores en remoto; solo llegan al bastión (no es una VLAN) | Propuesto |
+| — | WG-SEDES | 10.255.0.0/16 | wg-* | Un /30 por sede hacia ubu-fw: Huesca 10.255.12.0/30, Teruel 10.255.13.0/30, 4ª sede 10.255.14.0/30. Loopbacks OSPF 10.255.0.1 (ubu-fw), .2 (rt-hue), .3 (rt-ter) | Maqueta containerlab (D35) |
 | 30 (Hu) | LABORAL Huesca | 10.2.30.0/24 | — | Detrás de rt-hue, en la maqueta de containerlab (`red/clab/`) | Maqueta (D34) |
 
 ## Sedes remotas (D30)
-Topología en estrella: **ubu-fw es el único firewall** de las tres sedes. Huesca y Teruel no tienen servidor ni firewall propio, solo un router pequeño con VPN (rt-hue, rt-ter) y un switch gestionable.
+Topología en estrella: **ubu-fw es el firewall** de las tres sedes (en producción, una pareja ubu-fw1/ubu-fw2 con VRRP, D38). Huesca y Teruel no tienen servidor ni firewall propio, solo un router pequeño con VPN (rt-hue, rt-ter) y cuatro switches gestionables (D36).
 
 | VLAN | Zaragoza | Huesca | Teruel | Motivo |
 |---|---|---|---|---|
@@ -34,29 +34,29 @@ Topología en estrella: **ubu-fw es el único firewall** de las tres sedes. Hues
 | 20 Servidores | Sí (núcleo central) | No | No | Los 2 servidores están en Zaragoza; el presupuesto no da para servidores por sede |
 | 30-60 Departamentos | Sí | Sí | Sí | Personal de los 4 departamentos en todas (reparto estimado) |
 | 70 Impresoras | Sí (7) | Sí (3) | Sí (2) | Dato del cliente, 28/10 |
-| 80 Invitados | Sí | Sí | Sí | Salida directa a Internet por la fibra local, aislada; nunca entra en el túnel |
+| 80 Invitados | Sí | Sí | Sí | Sale a Internet por ubu-fw, aislada de la empresa (D38) |
 
 Qué hace el router de sede:
 - Crea las VLAN de la sede (subinterfaces 802.1Q) con puerta de enlace 10.<sede>.<vlan>.1.
 - Envía **todo** el tráfico de las VLAN de empresa por WireGuard a ubu-fw (ruta por defecto por el túnel). No enruta entre sus VLAN locales: quien decide es ubu-fw.
-- DHCP de las VLAN de empresa con relay hacia Kea; DHCP local solo para la VLAN 80.
-- VLAN 80: única salida local a Internet, aislada del resto.
-- Riesgo asumido: si cae la fibra de Zaragoza, las tres sedes se quedan sin servicio → línea 4G/5G de respaldo imprescindible en Zaragoza.
-- Dos túneles por sede (hacia la fibra y hacia el 4G de Zaragoza) y OSPF área 0 dentro de los túneles: si cae la fibra, cambia al 4G en ~8 s (hello 2, dead 8). ubu-fw marca los paquetes de cada túnel (fwmark) para que solo salgan por su línea (D35).
+- DHCP de las VLAN de empresa con relay hacia Kea.
+- VLAN 80: sale a Internet por ubu-fw, aislada del resto; no usa el DNS interno.
+- Riesgo asumido: si cae la fibra de Zaragoza, las tres sedes se quedan sin servicio. Sin 4G en el diseño (D38).
+- Un túnel WireGuard por sede hacia ubu-fw y OSPF área 0 dentro del túnel, con saludos cada 2 s y caída de vecino a los 8 s (D35).
 
 ## Switches (D36)
-- Zaragoza: núcleo (24 p) + 3 de acceso de 48 p PoE; Huesca: 1 de 48 p PoE; Teruel: 1 de 24 p PoE (estimación por puestos, pendiente del plano).
+- Zaragoza: dos núcleos (raíz y respaldo, STP) y tres de acceso; Huesca y Teruel: cuatro switches de sede cada una (D36).
 - Las VLAN se enrutan en ubu-fw (troncal al núcleo), nunca en un switch de capa 3.
-- Diagrama: `docs/diagramas/red-conmutacion.png`. Maqueta: `red/clab/`.
+- Diagrama: `docs/diagramas/red-v2.png`. Maqueta: `red/clab/`.
 
 ## Seguridad de las VLAN (obligatorio en lab y en producción)
-- Laboratorio: VMnet11-19 solo anfitrión, sin DHCP de VMware y sin adaptador del PC. Ninguna VM salvo ubu-fw tiene más de una NIC.
+- Laboratorio: VMnet11-18 solo anfitrión y sin DHCP de VMware. Solo VMnet11 (VLAN 10) tiene adaptador del PC, porque el anfitrión hace de equipo de administración (10.1.10.10); el resto no. Ninguna VM salvo ubu-fw tiene más de una NIC.
 - ubu-fw: nftables con `policy drop` en input y forward, registro de lo denegado. `ip_forward` se activa **solo después** de cargar nftables.
 - Antisuplantación: `rp_filter=1` (cada red solo entra por su interfaz). Sin redirecciones ICMP ni enrutamiento de origen. IPv6 apagado en el kernel (`ipv6.disable=1` en GRUB; no se usa).
-- Servicios de ubu-fw solo donde hacen falta: DHCP/DNS en las VLAN de usuarios, SSH solo desde VLAN 10 y VPN-ADM, en la WAN solo 1194/udp (OpenVPN) y 51820-51823/udp (WireGuard: un puerto por túnel).
+- Servicios de ubu-fw solo donde hacen falta: DHCP/DNS en las VLAN de usuarios, SSH solo desde VLAN 10 y VPN-ADM, en la WAN solo 1194/udp (OpenVPN) y 51820-51821/udp (WireGuard: un puerto por túnel).
 - Producción (switches): puertos de acceso con su VLAN fija, VLAN nativa sin uso (nunca la 1), troncal solo hacia ubu-fw o el router de sede, puertos libres apagados, DHCP snooping y protección de puerto. 802.1X, propuesto.
 
-VMnet11-19: tipo host-only, **sin** "Use local DHCP service" y **sin** "Connect a host virtual adapter".
+VMnet11-18: tipo host-only, **sin** "Use local DHCP service". "Connect a host virtual adapter" solo en VMnet11.
 
 ## IP fijas (VLAN 20)
 | Equipo | IP | Función |
