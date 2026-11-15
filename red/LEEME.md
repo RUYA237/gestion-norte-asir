@@ -1,6 +1,6 @@
 # Configuración de ubu-fw (red/)
 
-Estado: las VLAN 10 a 40 se implementaron en VMware el 03/11 (capturas en `evidencias/redes/20261103-*` y `20261104-*`). La versión del 14/11 añade las VLAN 50 a 80, las reglas de los servicios y la hora: validada en sintaxis (`nft -c`), pendiente de verificar en ubu-fw. OpenVPN y el bastión son propuestos y no están en estos ficheros.
+Estado: las VLAN 10 a 40 se implementaron en VMware el 03/11 (capturas en `evidencias/redes/20261103-*` y `20261104-*`). La versión del 14/11 añade las VLAN 50 a 80, las reglas de los servicios y la hora: validada en sintaxis (`nft -c`), pendiente de verificar en ubu-fw. Las ocho VLAN se verificaron en ubu-fw el 14 y 15/11. OpenVPN con certificado, contraseña local y TOTP se montó el 15/11 (`instalar-vpn.sh` recoge los mismos pasos que se hicieron a mano; las claves, los certificados y el perfil del empleado no se suben al repositorio). El bastión endurecido es propuesto.
 
 | Fichero del repo | Ruta en ubu-fw | Qué hace |
 |---|---|---|
