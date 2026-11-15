@@ -41,7 +41,7 @@ auth SHA256
 verify-client-cert require
 plugin /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so "openvpn login USERNAME password PASSWORD 'Verification code' OTP"
 auth-gen-token 28800
-reneg-sec 0
+reneg-sec 3600
 push "route 10.1.20.0 255.255.255.0"
 keepalive 10 60
 persist-key
