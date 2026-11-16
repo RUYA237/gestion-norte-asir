@@ -1,0 +1,14 @@
+# /etc/netplan/01-rt-ter.yaml en rt-ter (MAC reales de la máquina del laboratorio)
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    wan:
+      match: { macaddress: "00:0c:29:a0:1a:8a" }
+      set-name: wan
+      dhcp4: true
+      dhcp6: false
+    lan:
+      match: { macaddress: "00:0c:29:a0:1a:80" }
+      set-name: lan
+      addresses: [10.3.40.1/24]

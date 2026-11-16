@@ -1,0 +1,13 @@
+# /etc/netplan/99-huesca.yaml en cli-test, conectado a vmnet19 (equipo de pruebas de la LAN de Huesca)
+# Para Teruel (vmnet20): addresses 10.3.40.50/24, via 10.3.40.1, DNS 10.255.13.1
+network:
+  version: 2
+  ethernets:
+    ens33:
+      dhcp4: false
+      addresses: [10.2.30.50/24]
+      routes:
+        - to: default
+          via: 10.2.30.1
+      nameservers:
+        addresses: [10.255.12.1]

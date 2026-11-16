@@ -4,7 +4,7 @@ Estado: las VLAN 10 a 40 se implementaron en VMware el 03/11 (capturas en `evide
 
 | Fichero del repo | Ruta en ubu-fw | Qué hace |
 |---|---|---|
-| `ubu-fw-tarjetas.vmx.txt` | Fichero `.vmx` de la máquina (en el anfitrión) | Nueve tarjetas con MAC fija: WAN por NAT y VMnet11 a VMnet18 para las VLAN 10 a 80 |
+| `ubu-fw-tarjetas.vmx.txt` | Fichero `.vmx` de la máquina (en el anfitrión) | Nueve tarjetas: WAN por NAT y VMnet11 a VMnet18 para las VLAN 10 a 80 (v50 a v80 con MAC fija; wan y v10 a v40 conservan las que generó VMware, ya restauradas en `config-red-vlan.yaml`) |
 | `config-red-vlan.yaml` | `/etc/netplan/config-red-vlan.yaml` | Nombra las tarjetas por MAC (`wan`, `v10` a `v80`) y les da la IP `.1` de cada VLAN |
 | `sysctl-seguridad-red.conf` | `/etc/sysctl.d/99-seguridad-red.conf` | Antisuplantación (rp_filter), sin redirecciones, sin enrutamiento de origen |
 | `nftables.conf` | `/etc/nftables.conf` | Firewall: política por defecto denegar y registrar |
@@ -12,6 +12,7 @@ Estado: las VLAN 10 a 40 se implementaron en VMware el 03/11 (capturas en `evide
 | `dns-gestion-norte.conf` | `/etc/unbound/unbound.conf.d/dns-gestion-norte.conf` | DNS: zona de AD hacia dc1/dc2, el resto a Internet |
 | `kea-dhcp4.conf` | `/etc/kea/kea-dhcp4.conf` | DHCP de las VLAN 30, 40, 50, 60 y 80 |
 | `chrony-gestion-norte.conf` | `/etc/chrony/conf.d/gestion-norte.conf` | Sirve la hora a las VLAN 10 y 20 |
+| `wireguard/` | ver `wireguard/LEEME.md` | Túneles WireGuard hacia Huesca y Teruel (16/11): ficheros de ubu-fw, rt-hue, rt-ter y cli-test, sin claves privadas |
 | `instalar-ubu-fw.sh` | Se ejecuta con sudo desde esta carpeta | Instala los paquetes, copia cada fichero a su ruta, valida y arranca |
 | `ubu-fw-tarjetas-nuevas.vmx.txt` | Fichero `.vmx` de la ubu-fw del 03/11 | Añade las cuatro tarjetas de las VLAN 50 a 80 (VMnet15 a VMnet18) con MAC fija |
 | `actualizar-ubu-fw.sh` | Se ejecuta con sudo en la ubu-fw del 03/11 | Guarda copia de la configuración, añade las VLAN 50 a 80 al netplan y carga los ficheros nuevos; tras reiniciar, comprueba el estado |

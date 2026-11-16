@@ -1,0 +1,14 @@
+# /etc/netplan/01-rt-hue.yaml en rt-hue. Sustituir las MAC por las de las tarjetas (ip -br link).
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    wan:
+      match: { macaddress: "MAC_TARJETA_NAT" }
+      set-name: wan
+      dhcp4: true
+      dhcp6: false
+    lan:
+      match: { macaddress: "MAC_TARJETA_VMNET19" }
+      set-name: lan
+      addresses: [10.2.30.1/24]
