@@ -109,3 +109,15 @@ Solo el bastión (ubu-fw) acepta conexiones desde fuera de sus VLAN. Desde ubu-f
 | fail2ban | Pendiente de verificar | 2 |
 | Certificados SSH con caducidad | Propuesto | — |
 | WinRM por HTTPS en dc1 y dc2 | Propuesto | — |
+
+
+## Sedes remotas en el laboratorio de VMware (16/11)
+
+Cada sede es un router pequeño (rt-hue, rt-ter: Ubuntu Server, 1 GB, 2 tarjetas: NAT de VMware como «Internet» y LAN en vmnet19 o vmnet20) unido a ubu-fw por un túnel WireGuard. La LAN de la sede no se conecta a ubu-fw: solo llega por el túnel.
+
+| Sede | Túnel | Puerto en ubu-fw | LAN | Router | Estado |
+|---|---|---|---|---|---|
+| Huesca | 10.255.12.0/30 (ubu-fw .1, rt-hue .2) | 51820/udp | 10.2.30.0/24 (vmnet19) | rt-hue 10.2.30.1 | Implementado con pruebas de tráfico (15/11) |
+| Teruel | 10.255.13.0/30 (ubu-fw .1, rt-ter .2) | 51821/udp | 10.3.40.0/24 (vmnet20) | rt-ter 10.3.40.1 | Túnel comprobado con ping (16/11); pruebas de tráfico pendientes de verificar |
+
+Rutas estáticas por AllowedIPs: el router de cada sede manda a ubu-fw lo que va a 10.1.0.0/16 y ubu-fw manda a la sede su 10.2.0.0/16 o 10.3.0.0/16. Las sedes tienen los permisos de un departamento (grupos DEP, INTERNAS y CON_DNS de `nftables.conf`). OSPF y VRRP, propuestos (D42). Ficheros en `red/wireguard/`.
