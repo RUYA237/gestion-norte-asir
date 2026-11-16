@@ -17,3 +17,5 @@ Pasos (cada uno, en la máquina que indica): 1) netplan y reinicio (rt-*); 2) `a
 En `nftables.conf` los túneles están en los grupos DEP, INTERNAS y CON_DNS (mismos permisos que un departamento), la entrada acepta 51820 y 51821/udp por la WAN y el NAT cubre 10.1/10.2/10.3.0.0/16. En Unbound se escucha en 10.255.12.1 y 10.255.13.1 y se admiten 10.2.0.0/16 y 10.3.0.0/16.
 
 Pruebas del 15/11 desde cli-test (10.2.30.50): DNS del dominio e Internet por el túnel correctos; 445 de dc1 abierto; 443 de ubu-svc llega (rechaza, sin web); 5432, SSH a ubu-fw y puerta de enlace de la VLAN 30 sin respuesta y registrados con `IN=wg-hue`. Capturas: `evidencias/redes/2026111[56]-raul-wireguard-*.png`; memoria, apartado 4.5.3.
+
+Pruebas del 16/11 desde cli-test en la LAN de Teruel (10.3.40.50, DNS 10.255.13.1): mismos resultados que en Huesca, con registro `IN=wg-ter`. Capturas: `evidencias/redes/20261116-raul-wireguard-21..24-*.png`. Tras reiniciar ubu-fw el 16/11 los dos túneles se restablecieron solos (`20261116-raul-reinicio-02-wg-show.png`).

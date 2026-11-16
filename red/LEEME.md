@@ -13,6 +13,7 @@ Estado: las VLAN 10 a 40 se implementaron en VMware el 03/11 (capturas en `evide
 | `kea-dhcp4.conf` | `/etc/kea/kea-dhcp4.conf` | DHCP de las VLAN 30, 40, 50, 60 y 80 |
 | `chrony-gestion-norte.conf` | `/etc/chrony/conf.d/gestion-norte.conf` | Sirve la hora a las VLAN 10 y 20 |
 | `wireguard/` | ver `wireguard/LEEME.md` | Túneles WireGuard hacia Huesca y Teruel (16/11): ficheros de ubu-fw, rt-hue, rt-ter y cli-test, sin claves privadas |
+| `ssh/10-bastion.conf` | `/etc/ssh/sshd_config.d/10-bastion.conf` | Bastión SSH (16/11): solo clave, sin root, solo el grupo `gn-admin`, 3 intentos y 30 s. Se lee antes que `50-cloud-init.conf` |
 | `instalar-ubu-fw.sh` | Se ejecuta con sudo desde esta carpeta | Instala los paquetes, copia cada fichero a su ruta, valida y arranca |
 | `ubu-fw-tarjetas-nuevas.vmx.txt` | Fichero `.vmx` de la ubu-fw del 03/11 | Añade las cuatro tarjetas de las VLAN 50 a 80 (VMnet15 a VMnet18) con MAC fija |
 | `actualizar-ubu-fw.sh` | Se ejecuta con sudo en la ubu-fw del 03/11 | Guarda copia de la configuración, añade las VLAN 50 a 80 al netplan y carga los ficheros nuevos; tras reiniciar, comprueba el estado |
@@ -27,7 +28,7 @@ Todo lo que no aparece se deniega y se registra.
 | VLAN 30, 40, 50, 60 y 80 | ubu-fw | DHCP |
 | VLAN 10 a 60 | ubu-fw | DNS |
 | VLAN 10 y 20 | ubu-fw | Hora (NTP) |
-| VLAN 10 | ubu-fw | SSH |
+| VLAN 10 | ubu-fw | SSH (solo para el grupo `gn-admin`, con clave; ver `ssh/10-bastion.conf`) |
 | VLAN 30 a 60 | Internet | Web (TCP 80 y 443, UDP 443) |
 | VLAN 30 a 60 | dc1 y dc2 | Puertos de Active Directory |
 | VLAN 30 a 60 | ubu-svc (10.1.20.20) | 443 (web por Caddy). El 5432 de PostgreSQL no se abre |
