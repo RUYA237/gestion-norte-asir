@@ -1,0 +1,63 @@
+﻿lun 16 nov 2026 17:29:57 UTC
+--- mdstat
+Personalities : [raid1] [raid0] [raid6] [raid5] [raid4] [raid10] 
+md0 : active raid1 sdc[2] sdb[0]
+      2094080 blocks super 1.2 [2/2] [UU]
+      
+unused devices: <none>
+--- mdadm
+/dev/md0:
+           Version : 1.2
+     Creation Time : Mon Nov 16 12:57:09 2026
+        Raid Level : raid1
+        Array Size : 2094080 (2045.00 MiB 2144.34 MB)
+     Used Dev Size : 2094080 (2045.00 MiB 2144.34 MB)
+      Raid Devices : 2
+     Total Devices : 2
+       Persistence : Superblock is persistent
+
+       Update Time : Mon Nov 16 17:28:58 2026
+             State : clean 
+    Active Devices : 2
+   Working Devices : 2
+    Failed Devices : 0
+     Spare Devices : 0
+
+Consistency Policy : resync
+
+              Name : ubu-nas:0  (local to host ubu-nas)
+              UUID : 3419a8ff:a0a01004:35c7e3a2:1045f732
+            Events : 51
+
+    Number   Major   Minor   RaidDevice State
+       0       8       16        0      active sync   /dev/sdb
+       2       8       32        1      active sync   /dev/sdc
+--- montaje
+TARGET   SOURCE   FSTYPE OPTIONS
+/srv/nas /dev/md0 ext4   rw,relatime
+--- smbstatus
+
+Samba version 4.19.5-Ubuntu
+PID     Username     Group        Machine                                   Protocol Version  Encryption           Signing              
+----------------------------------------------------------------------------------------------------------------------------------------
+2652    nas_laboral  nas_laboral  10.1.20.5 (ipv4:10.1.20.5:54164)          SMB3_11           AES-128-GCM          AES-128-GMAC         
+
+Service      pid     Machine       Connected at                     Encryption   Signing     
+---------------------------------------------------------------------------------------------
+Laboral      2652    10.1.20.5     lun nov 16 17:28:25 2026 UTC     AES-128-GCM  AES-128-GMAC
+
+
+--- recursos
+[global]
+[Administracion]
+	path = /srv/nas/Administracion
+	valid users = @gn_administracion
+[Atencion]
+	path = /srv/nas/Atencion
+	valid users = @gn_atencion
+[Fiscal]
+	path = /srv/nas/Fiscal
+	valid users = @gn_fiscal
+[Laboral]
+	path = /srv/nas/Laboral
+	valid users = @gn_laboral
