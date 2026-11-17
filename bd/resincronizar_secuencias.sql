@@ -1,5 +1,4 @@
 -- Resincroniza las secuencias de las columnas IDENTITY tras cargar datos con ids explicitos.
--- Se ejecuta despues de seed_datos_prueba.sql y carga_nominas_historico.sql (apartado 6.2.6).
 DO $$
 DECLARE r record;
 BEGIN
