@@ -1,6 +1,5 @@
--- Auditoria de lecturas con pgaudit (apartado 6.3.5 de la memoria).
--- Se ejecuta como admin en gestion_norte.
--- Requisito previo: el contenedor arranca con shared_preload_libraries=pgaudit (svc/postgres.container).
+-- Auditoria de lecturas con pgaudit.
+
 CREATE EXTENSION IF NOT EXISTS pgaudit;
 CREATE ROLE gn_pgaudit NOLOGIN;
 GRANT SELECT ON nomina, cuenta_bancaria, trabajador TO gn_pgaudit;
