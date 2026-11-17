@@ -1,8 +1,6 @@
 -- =====================================================================
 -- Gestión Norte · Consultas de negocio (10)
 -- Cada consulta indica el caso de uso: quién la usaría y para qué.
--- Se ejecutan con admin; en producción cada una correría con el rol
--- del departamento que la necesita (se indica entre paréntesis).
 -- =====================================================================
 \pset pager off
 
