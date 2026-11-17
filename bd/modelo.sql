@@ -355,4 +355,7 @@ CREATE TRIGGER trg_auditar_cuenta_bancaria
     ON cuenta_bancaria
     FOR EACH ROW EXECUTE FUNCTION fn_auditar_cuenta_bancaria();
 
+-- Indice para filtrar nominas por periodo (medido en el capitulo 6.5)
+CREATE INDEX IF NOT EXISTS ix_nomina_periodo ON nomina (periodo);
+
 COMMIT;
