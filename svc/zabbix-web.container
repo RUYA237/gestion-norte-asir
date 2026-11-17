@@ -1,0 +1,21 @@
+[Unit]
+Description=Interfaz web de Zabbix 6.0
+Requires=zabbix-db.service
+After=zabbix-db.service
+
+[Container]
+Image=docker.io/zabbix/zabbix-web-nginx-pgsql:ubuntu-6.0-latest
+ContainerName=zabbix-web
+Network=zabbix.network
+Secret=zbx_db_pass,type=env,target=POSTGRES_PASSWORD
+Environment=DB_SERVER_HOST=zabbix-db
+Environment=POSTGRES_USER=zabbix
+Environment=POSTGRES_DB=zabbix
+Environment=ZBX_SERVER_HOST=zabbix-server
+Environment=PHP_TZ=Europe/Madrid
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

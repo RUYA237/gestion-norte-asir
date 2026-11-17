@@ -1,0 +1,8 @@
+[Unit]
+Description=Copia cifrada de PostgreSQL con restic hacia bkp01
+Wants=postgres.service
+After=postgres.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/bin/backup-bd.sh

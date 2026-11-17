@@ -4,7 +4,8 @@ After=network-online.target
 
 [Container]
 ContainerName=postgres
-Image=docker.io/library/postgres:17
+Image=localhost/postgres-pgaudit:17
+Exec=postgres -c shared_preload_libraries=pgaudit
 Secret=pg_pass,type=env,target=POSTGRES_PASSWORD
 Environment=POSTGRES_USER=admin
 Environment=POSTGRES_DB=gestion_norte

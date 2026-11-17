@@ -1,0 +1,19 @@
+{
+    default_sni 192.168.116.139
+}
+
+192.168.116.139 {
+    tls internal
+    log {
+        output file /data/access.log
+        format json
+    }
+    header {
+        Strict-Transport-Security max-age=31536000
+        X-Content-Type-Options nosniff
+        X-Frame-Options SAMEORIGIN
+        Referrer-Policy no-referrer
+        -Server
+    }
+    reverse_proxy zabbix-web:8080
+}

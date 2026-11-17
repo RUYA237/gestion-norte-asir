@@ -1,0 +1,17 @@
+[Unit]
+Description=Base de datos de Zabbix (PostgreSQL 16)
+
+[Container]
+Image=docker.io/library/postgres:16
+ContainerName=zabbix-db
+Network=zabbix.network
+Secret=zbx_db_pass,type=env,target=POSTGRES_PASSWORD
+Environment=POSTGRES_USER=zabbix
+Environment=POSTGRES_DB=zabbix
+Volume=zabbix-db-data:/var/lib/postgresql/data
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
